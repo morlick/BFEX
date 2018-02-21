@@ -1,8 +1,8 @@
 from bfex.components.scraper.scraper import *
-from bfex.components.scraper.orcidscraper import *
-from bfex.components.scraper.researchidscraper import *
-from bfex.components.scraper.profilescraper import *
-from bfex.components.scraper.scrapertype import *
+from bfex.components.scraper.orcid_scraper import *
+from bfex.components.scraper.researchid_scraper import *
+from bfex.components.scraper.profile_scraper import *
+from bfex.components.scraper.scraper_type import *
 
 class ScraperFactory(object):
 
