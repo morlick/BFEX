@@ -16,10 +16,10 @@ class Scraper(ABC):
     def validate_url(self):
         pass
 
-    def get_url(self):
+    def get_content(self):
         response = requests.get(self.url)
         soup = BeautifulSoup(response.text, "html.parser")
         return soup
 
-    def get_content(self):
+    def get_scrapps(self):
         return []

@@ -15,5 +15,5 @@ class ScraperFactory(object):
         if type == ScraperType.PROFILE:
             scraper = ProfileScraper(url, type)
 
-        scrapp = scraper.get_content()
-        return scrapp
+        scrapps = scraper.get_scrapps()
+        return scrapps

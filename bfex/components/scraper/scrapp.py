@@ -1,6 +1,6 @@
 class Scrapp(object):
     def __init__(self):
-        self.data_source
+        self.data_source = ""
         self.formated_name = ""
         self.title = ""
         self.text = ""
