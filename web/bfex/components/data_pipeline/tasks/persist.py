@@ -18,7 +18,7 @@ class UpdateFacultyFromScrape(Task):
         :returns True if the data is of the form above, else False.
         """
         satisfied = True
-
+        
         for faculty in data:
             if (not isinstance(faculty, tuple) or
                     not isinstance(faculty[0], str) or
@@ -30,12 +30,14 @@ class UpdateFacultyFromScrape(Task):
     def run(self, data):
         """Updates a Faculty members information in Elasticsearch, based on the result of a scrape.
 
-        :param data: list of tuple of form <str, Scrapp>
+        :param data: list of tuples of form <str, Scrapp>
         :return: The updated instance of a Faculty model.
         """
+        print("persist")
         for faculty in data:
-            faculty_name = data[0]
-            scrapp = data[1]
+            faculty_name = faculty[0]
+            scrapp = faculty[1]
+
 
             search_results = Faculty.search().query('match', name=faculty_name).execute()
             if len(search_results) > 1:
