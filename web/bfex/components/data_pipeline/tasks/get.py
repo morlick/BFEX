@@ -13,27 +13,15 @@ class GetFacultyFromElasticSearch(Task):
 
     def is_requirement_satisfied(self, data):
         satisfied = True
-
+        
         return satisfied
 
     def run(self, data):
-
-        search_results = Faculty.search().query().execute()
-        #if len(search_results) > 1:
-            # Shouldn't happen, but could.
-        #   raise WorkflowException("Faculty name is ambiguous during search... More than 1 result")
-        print(search_results)
-        # faculty = search_results[0]
-
-        # if "orcid_link" in scrapp.meta_data:
-        #     faculty.orc_id = scrapp.meta_data["orcid_link"]
-
-        # if "researchid_link" in scrapp.meta_data:
-        #     faculty.research_id = scrapp.meta_data["researchid_link"]
-
-        # faculty.save()
-
-        return search_results
+        print("get faculty elastic")
+        s = Faculty.search()
+        allFaculty = [faculty for faculty in s.scan()]
+        print(allFaculty)
+        return allFaculty
 
 
 if __name__ == "__main__":

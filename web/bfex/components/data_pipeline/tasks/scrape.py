@@ -19,6 +19,7 @@ class FacultyPageScrape(Task):
         :param data: str or Faculty instance.
         :return: True if the name is a valid one, else False
         """
+        data=data[0]
 
         # Should this return the data as it is expected for running the task?
         if isinstance(data, str):
@@ -34,17 +35,21 @@ class FacultyPageScrape(Task):
         :param data: str or Faculty instance.
         :return: tuple of the faculty name and Scrapp produced by scraping the faculty directory page.
         """
-        if isinstance(data, str):
-            faculty_name = data
-        else:
-            faculty_name = data.name
+        tuplelist=[]
+        for faculty in data:
+            if isinstance(data, str):
+                faculty_name = data
+            else:
+                faculty_name = data.name
 
-        faculty_directory_url = URLs.build_faculty_url(faculty_name)
+            faculty_directory_url = URLs.build_faculty_url(faculty_name)
 
-        scraper = ScraperFactory.create_scraper(faculty_directory_url, ScraperType.PROFILE)
-        scrapp = scraper.get_scrapps()[0]
+            scraper = ScraperFactory.create_scraper(faculty_directory_url, ScraperType.PROFILE)
+            scrapp = scraper.get_scrapps()[0]
+            tuple = (faculty_name, scrapp)
+            tuplelist.append(tuple)
 
-        return faculty_name, scrapp
+        return tuplelist
 
 
 if __name__ == "__main__":

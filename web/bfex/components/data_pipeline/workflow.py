@@ -77,10 +77,7 @@ if __name__ == "__main__":
     from elasticsearch_dsl import connections
     connections.create_connection()
 
-    #tasks = [FacultyPageScrape, UpdateFacultyFromScrape]
-    tasks = [GetFacultyFromElasticSearch, UpdateFacultyFromScrape]
+    tasks = [GetFacultyFromElasticSearch, FacultyPageScrape, UpdateFacultyFromScrape]
     workflow_manager = Workflow(tasks, "thing")
 
     result = workflow_manager.run()
-
-    #print(result)
