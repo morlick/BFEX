@@ -5,7 +5,7 @@ from bfex.components.scraper.scraper_type import ScraperType
 base_url = "https://www.ualberta.ca/science/about-us/contact-us/faculty-directory/"
 
 
-class TestScraper():
+class TestProfileScraper():
     def test_create__success(self):
         my_scraper = ProfileScraper(base_url + "william-allison", ScraperType.PROFILE)
         assert my_scraper is not None
