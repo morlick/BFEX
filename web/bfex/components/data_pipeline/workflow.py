@@ -54,8 +54,8 @@ class Workflow(object):
             result = current_task.run(self.last_result)
             self.last_result = result
             self.current_step += 1
-        else:
-            raise WorkflowTaskArgumentException("{} received an unsatisfactory argument - {}")
+        #else:
+            #raise WorkflowTaskArgumentException("{} received an unsatisfactory argument - {}")
 
         return True
 
@@ -73,14 +73,11 @@ class Workflow(object):
 
 
 if __name__ == "__main__":
-    from bfex.components.data_pipeline.tasks import FacultyPageScrape, UpdateFacultyFromScrape
+    from bfex.components.data_pipeline.tasks import FacultyPageScrape, UpdateFacultyFromScrape, GetFacultyFromElasticSearch
     from elasticsearch_dsl import connections
     connections.create_connection()
 
-    tasks = [FacultyPageScrape, UpdateFacultyFromScrape]
-
-    workflow_manager = Workflow(tasks, "Stan.Boutin")
+    tasks = [GetFacultyFromElasticSearch, FacultyPageScrape, UpdateFacultyFromScrape]
+    workflow_manager = Workflow(tasks, "thing")
 
     result = workflow_manager.run()
-
-    print(result)
