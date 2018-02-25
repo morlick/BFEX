@@ -19,7 +19,7 @@ class FacultyPageScrape(Task):
         :param data: str or Faculty instance.
         :return: True if the name is a valid one, else False
         """
-        data=data[0]
+        data = data[0]
 
         # Should this return the data as it is expected for running the task?
         if isinstance(data, str):
@@ -27,6 +27,7 @@ class FacultyPageScrape(Task):
             return FacultyNames.validate_name(data)
 
         if isinstance(data, Faculty):
+            print(FacultyNames.validate_name(data.name))
             return FacultyNames.validate_name(data.name)
 
     def run(self, data):
@@ -37,10 +38,10 @@ class FacultyPageScrape(Task):
         """
         tuplelist=[]
         for faculty in data:
-            if isinstance(data, str):
-                faculty_name = data
+            if isinstance(faculty, str):
+                faculty_name = faculty
             else:
-                faculty_name = data.name
+                faculty_name = faculty.name
 
             faculty_directory_url = URLs.build_faculty_url(faculty_name)
 
