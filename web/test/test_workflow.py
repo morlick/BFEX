@@ -65,9 +65,3 @@ class TestWorkflow(object):
         with pytest.raises(TypeError):
             workflow.Workflow(task_list)
 
-        # Test that a WorkflowArgumentException is raised when incorrect data is passed to a task
-        task_list = [self.SimpleTask]
-        workflow_manager = workflow.Workflow(task_list, init_data="bad data")
-        with pytest.raises(WorkflowTaskArgumentException):
-            workflow_manager.run()
-
