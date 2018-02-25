@@ -19,36 +19,38 @@ class UpdateFacultyFromScrape(Task):
         """
         satisfied = True
 
-        if (not isinstance(data, tuple) or
-                not isinstance(data[0], str) or
-                not isinstance(data[1], Scrapp)):
-            satisfied = False
+        for faculty in data:
+            if (not isinstance(faculty, tuple) or
+                    not isinstance(faculty[0], str) or
+                    not isinstance(faculty[1], Scrapp)):
+                satisfied = False
 
         return satisfied
 
     def run(self, data):
         """Updates a Faculty members information in Elasticsearch, based on the result of a scrape.
 
-        :param data: tuple of form <str, Scrapp>
+        :param data: list of tuple of form <str, Scrapp>
         :return: The updated instance of a Faculty model.
         """
-        faculty_name = data[0]
-        scrapp = data[1]
+        for faculty in data:
+            faculty_name = data[0]
+            scrapp = data[1]
 
-        search_results = Faculty.search().query('match', name=faculty_name).execute()
-        if len(search_results) > 1:
-            # Shouldn't happen, but could.
-            raise WorkflowException("Faculty name is ambiguous during search... More than 1 result")
+            search_results = Faculty.search().query('match', name=faculty_name).execute()
+            if len(search_results) > 1:
+                # Shouldn't happen, but could.
+                raise WorkflowException("Faculty name is ambiguous during search... More than 1 result")
 
-        faculty = search_results[0]
+            faculty = search_results[0]
 
-        if "orcid_link" in scrapp.meta_data:
-            faculty.orc_id = scrapp.meta_data["orcid_link"]
+            if "orcid_link" in scrapp.meta_data:
+                faculty.orc_id = scrapp.meta_data["orcid_link"]
 
-        if "researchid_link" in scrapp.meta_data:
-            faculty.research_id = scrapp.meta_data["researchid_link"]
+            if "researchid_link" in scrapp.meta_data:
+                faculty.research_id = scrapp.meta_data["researchid_link"]
 
-        faculty.save()
+            faculty.save()
 
         return faculty
 
