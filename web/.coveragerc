@@ -1,0 +1,2 @@
+[run]
+omit = bfex/components/key_generation/RAKE/rake.py
