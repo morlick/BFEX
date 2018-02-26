@@ -3,6 +3,8 @@ from bfex.components.scraper.scrapp import Scrapp
 from bfex.models import *
 from bfex.common.exceptions import WorkflowException
 from bfex.components.key_generation.rake_approach import *
+from bfex.components.key_generation.generic_approach import *
+
 
 
 class UpdateKeywordsFromScrape(Task):
@@ -26,9 +28,13 @@ class UpdateKeywordsFromScrape(Task):
 
 
     def run(self,data):
+        """ Updates keywords of all profs
+
+        :param data is a faculty object
+        :return: last faculty member handled
+        """
         no_text_count = 0
         for faculty in data:
-            print(faculty.name)
             faculty_name = faculty.name
     
             search_results = Faculty.search().query('match', name=faculty_name).execute()
@@ -39,11 +45,13 @@ class UpdateKeywordsFromScrape(Task):
             faculty = search_results[0]
             if faculty.text != None:
                 
-                keygen = RakeApproach()
-
-                rake_keyword = keygen.generate_keywords(faculty.text)
-
+                rake = RakeApproach()
+                rake_keyword = rake.generate_keywords(faculty.text)
                 faculty.rake_keywords = rake_keyword
+
+                generic = GenericApproach()
+                generic_keyword = generic.generate_keywords(faculty.text)
+                faculty.generic_keywords = generic_keyword
 
                 faculty.save()
             else:

@@ -55,12 +55,6 @@ class UpdateFacultyFromScrape(Task):
 
             if "text" in scrapp.meta_data:
                  faculty.text = scrapp.meta_data["text"]
-                 keygen = RakeApproach()
-
-                 rake_keyword = keygen.generate_keywords(faculty.text)
-
-                 faculty.rake_keywords = rake_keyword
-
 
             faculty.save()
 
@@ -71,9 +65,3 @@ if __name__ == "__main__":
     from elasticsearch_dsl import connections
     connections.create_connection()
     Faculty.init()
-
-    search = Faculty.search()
-    results = search.query('match', name="Erin.Bayne")
-
-    for faculty in results:
-        print(faculty)
