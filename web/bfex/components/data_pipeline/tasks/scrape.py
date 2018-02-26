@@ -15,8 +15,8 @@ class FacultyPageScrape(Task):
 
         For a Faculty Directory page scrape, we can get the data in one of 2 ways. Either a faculty member name is
         passed to us, or an instance of a faculty member is passed in.
-        :param data:
-        :return:
+        :param list data: list of all faculty
+        :return: True if valid data, otherwise false
         """
         data = data[0]
         # Should this return the data as it is expected for running the task?
