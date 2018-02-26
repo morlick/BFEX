@@ -12,4 +12,3 @@ class TestFaculty(object):
 
         assert prof.department == "cs"
 
-        # prof.save()
