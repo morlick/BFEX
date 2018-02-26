@@ -56,9 +56,6 @@ class FacultyPageScrape(Task):
 if __name__ == "__main__":
     task = FacultyPageScrape()
 
-    if task.is_requirement_satisfied("Stan.Boutin"):
-        task.run("Stan.Boutin")
-
 
 
 
