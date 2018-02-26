@@ -29,6 +29,11 @@ class FacultyPageScrape(Task):
 
     def run(self, data):
 
+        """Performs a scraping of a faculty members directory page.
+        :param data: str or Faculty instance.
+        :return: tuple of the faculty name and Scrapp produced by scraping the faculty directory page.
+        """
+        
         tuplelist=[]
         for faculty in data:
             if isinstance(faculty, str):
@@ -44,11 +49,6 @@ class FacultyPageScrape(Task):
             tuple = (faculty_name,scrapp)
             tuplelist.append(tuple)
             print(tuple)
-        
-
-        #keygen = RakeApproach()
-        
-        #print(keygen.generate_keywords(scrapp.meta_data["text"]))
         
         return tuplelist
 

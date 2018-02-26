@@ -35,6 +35,8 @@ class Faculty(DocType, Model):
     research_id = Text()
 
     user_keywords = Text()
+    text = Text()
+    rake_keywords = Text()
 
     class Meta:
         index = "faculty"
