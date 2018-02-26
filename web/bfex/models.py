@@ -41,6 +41,16 @@ class Faculty(DocType, Model):
 
     def __str__(self):
         return "<Faculty ID:{} Name: {} Email: {}".format(self.faculty_id, self.name, self.email)
+        
+class Keywords(DocType,Model):
+    faculty_id = Integer(required=True)
+    rake_keywords = Text()
+
+    class Meta: 
+        index = "keywords"
+
+    def __str__(self):
+        return "<Faculty ID:{} Keywords From Rake :{}>".format(self.faculty_id,self.rake_keywords)
 
 
 class Grant(DocType):

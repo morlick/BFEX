@@ -51,6 +51,9 @@ class UpdateFacultyFromScrape(Task):
             if "researchid_link" in scrapp.meta_data:
                 faculty.research_id = scrapp.meta_data["researchid_link"]
 
+            if "text" in scrapp.meta_data:
+                 faculty.text = scrapp.meta_data["text"]
+                 
             faculty.save()
 
         return faculty
