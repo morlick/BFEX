@@ -2,6 +2,8 @@ from bfex.components.data_pipeline.tasks import Task
 from bfex.components.scraper.scrapp import Scrapp
 from bfex.models import Faculty
 from bfex.common.exceptions import WorkflowException
+from bfex.components.key_generation.rake_approach import *
+
 
 
 class UpdateFacultyFromScrape(Task):
@@ -51,6 +53,15 @@ class UpdateFacultyFromScrape(Task):
             if "researchid_link" in scrapp.meta_data:
                 faculty.research_id = scrapp.meta_data["researchid_link"]
 
+            if "text" in scrapp.meta_data:
+                 faculty.text = scrapp.meta_data["text"]
+                 keygen = RakeApproach()
+
+                 rake_keyword = keygen.generate_keywords(faculty.text)
+
+                 faculty.rake_keywords = rake_keyword
+
+
             faculty.save()
 
         return faculty
@@ -62,7 +73,7 @@ if __name__ == "__main__":
     Faculty.init()
 
     search = Faculty.search()
-    results = search.query('match', name="Neil.Adames")
+    results = search.query('match', name="Erin.Bayne")
 
     for faculty in results:
         print(faculty)
