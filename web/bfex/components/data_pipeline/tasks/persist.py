@@ -33,7 +33,6 @@ class UpdateFacultyFromScrape(Task):
         :param data: list of tuples of form <str, Scrapp>
         :return: The updated instance of a Faculty model.
         """
-        print("persist")
         for faculty in data:
             faculty_name = faculty[0]
             scrapp = faculty[1]

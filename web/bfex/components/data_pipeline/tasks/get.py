@@ -17,10 +17,8 @@ class GetFacultyFromElasticSearch(Task):
         return satisfied
 
     def run(self, data):
-        print("get faculty elastic")
         s = Faculty.search()
         allFaculty = [faculty for faculty in s.scan()]
-        print(allFaculty)
         return allFaculty
 
 
