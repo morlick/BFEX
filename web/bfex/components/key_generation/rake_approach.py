@@ -13,7 +13,7 @@ class RakeApproach(KeyGenerationApproach):
 
     def generate_keywords(self, text):
         
-        rake_object  = rake.Rake(5,3,2)
+        rake_object  = rake.Rake(5,3,1)
             
         keywords_with_score = rake_object.run(text)
 

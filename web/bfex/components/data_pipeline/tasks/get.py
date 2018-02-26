@@ -19,7 +19,7 @@ class GetFacultyFromElasticSearch(Task):
     def run(self, data):
         s = Faculty.search()
         allFaculty = [faculty for faculty in s.scan()]
-        return allFaculty[:5]
+        return allFaculty
 
 
 if __name__ == "__main__":

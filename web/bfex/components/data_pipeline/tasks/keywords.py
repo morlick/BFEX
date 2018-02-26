@@ -26,27 +26,29 @@ class UpdateKeywordsFromScrape(Task):
 
 
     def run(self,data):
-
+        no_text_count = 0
         for faculty in data:
-            faculty_name = faculty[0]
-            
-        faculty_name = "Stan.Boutin"
-
-        search_results = Faculty.search().query('match', name=faculty_name).execute()
-        if len(search_results) > 1:
-            # Shouldn't happen, but could.
-            raise WorkflowException("Professor id is ambiguous during search... More than 1 result")
+            print(faculty.name)
+            faculty_name = faculty.name
+    
+            search_results = Faculty.search().query('match', name=faculty_name).execute()
+            if len(search_results) > 1:
+                # Shouldn't happen, but could.
+                raise WorkflowException("Professor id is ambiguous during search... More than 1 result")
         
-        faculty = search_results[0]
-        
-        keygen = RakeApproach()
+            faculty = search_results[0]
+            if faculty.text != None:
+                
+                keygen = RakeApproach()
 
-        rake_keyword = keygen.generate_keywords(faculty.text)
+                rake_keyword = keygen.generate_keywords(faculty.text)
 
-        faculty.rake_keywords = rake_keyword
+                faculty.rake_keywords = rake_keyword
 
-        faculty.save()
-
+                faculty.save()
+            else:
+                no_text_count+=1
+        print("NO TEXT COUNT = ", no_text_count)
         return faculty
 
 
@@ -56,15 +58,6 @@ if __name__ == "__main__":
     Faculty.init()
 
     search = Faculty.search()
-
-    results = search.query('match', name="Erin.Bayne")
+    allFaculty = [faculty for faculty in search.scan()]
     task = UpdateKeywordsFromScrape()
-    task.run(search)
-
-    for faculty in results:
-        print(faculty)
- 
-    ##search = Keywords.search()
-    ##results = search.query('match', faculty_id="370")
-    ##for keywords in results:
-      ##  print(keywords)
+    task.run(allFaculty)
