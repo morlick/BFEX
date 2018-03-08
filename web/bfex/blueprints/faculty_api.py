@@ -37,6 +37,13 @@ class FacultyListAPI(Resource):
     """Methods for performing some operations on lists of Faculty members."""
 
     def get(self):
+        """HTTP Get for the faculty list resource.
+
+        Returns a list of faculty members from elasticsearch.
+        :param page: URL Parameter for the page to fetch. Default - 0.
+        :param results: URL Parameter for the number of results to return per page. Default - 20.
+        :return:
+        """
         page = request.args.get("page", default=0, type=int)
         results = request.args.get("results", default=20, type=int)
 

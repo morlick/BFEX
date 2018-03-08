@@ -1,4 +1,7 @@
 import re
+from html import unescape
+import nltk
+import string
 
 
 def generate_names_from_json(item):
@@ -41,6 +44,33 @@ class FacultyNames:
         url_safe = '-'.join(name_list)
 
         return url_safe.lower()
+
+
+class TextNormalizer:
+
+    @staticmethod
+    def tokenize(text):
+        """ Takes in a string of text, normalizes it, then tokenizes a the
+            string into a list of tokens."""
+        # Split normaized text on all whitespace
+        tokenizer = nltk.tokenize.RegexpTokenizer(r'\w+')
+        tokens = tokenizer.tokenize(TextNormalizer.normalize(text))
+        return tokens
+
+    @staticmethod
+    def normalize(text):
+        """ Normalize a given string of text by decoding HTML characters,
+            removing punctuation, and lowering the case of all characters."""
+        # Unescape html character codes
+        no_html = unescape(text)
+
+        # Remove punctuation from the text
+        no_punc = no_html.translate(
+            str.maketrans("","", string.punctuation))
+
+        # Normalize all the text to lower case
+        normalized = no_punc.lower()
+        return normalized
 
 
 if __name__ == "__main__":
