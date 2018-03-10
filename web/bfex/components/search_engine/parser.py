@@ -1,6 +1,7 @@
 from .stack import Stack
 from bfex.common.utils import TextNormalizer
 
+# Operator precedence for parsing
 precedence = {
     "AND": 2,
     "OR": 2,
@@ -20,15 +21,21 @@ invalid_prev_terms = {
 
 
 class QueryParser(object):
+    """Manages parsing boolean query strings, and converting them to a postfix list."""
 
     def _normalize_query(self, query):
+        """Normalizes the braces in the query to be padded with spaces. Allows easy splitting of the query."""
         query = query.replace('(', ' ( ')
         normalized = query.replace(')', ' ) ')
 
         return normalized
 
     def _validate_query(self, query):
-        """Validates the order and overall construction of the query"""
+        """Validates the order and overall construction of the query
+
+        :exception: QueryException if the query is not a valid boolean query."""
+
+        print(query)
         if query.count('(') != query.count(')'):
             raise QueryException('Parentheses dont match')
 
@@ -56,8 +63,12 @@ class QueryParser(object):
             i += 1
 
     def _make_query(self, q_list):
-        """Takes a list of terms and constructs a new list with valid types of query parameters
-        Valid types in a query include bools, keywords, parentheses and phrases"""
+        """Constructs a new list with valid types of query parameters.
+
+        Valid types include PHRASE, KEYWORD, or operators
+
+        :param q_list: Query split on spaces into a list.
+        """
         good_query = []
         i = 0
         while i < len(q_list):
@@ -85,9 +96,12 @@ class QueryParser(object):
         return good_query
 
     def _order_of_operations(self, good_query):
-        """Iterates through query terms and constructs a postfix ordered list with correct order of operations
-        The code used to create postfix notation is primarily based from the following textbook
-        http://interactivepython.org/runestone/static/pythonds/BasicDS/InfixPrefixandPostfixExpressions.html"""
+        """Creates a postfix ordered list with correct order of operations, as determined by operator precedence.
+
+        :param good_query: A validated list of tuples (keywords, phrase) or operators.
+        :return: A postfix ordered list of keywords, phrases and operators, not including braces.
+        :href: http://interactivepython.org/runestone/static/pythonds/BasicDS/InfixPrefixandPostfixExpressions.html
+        """
         q_stack = Stack()
         result_list = []
         for token in good_query:
@@ -115,10 +129,13 @@ class QueryParser(object):
         return result_list
 
     def parse_query(self, query):
-        """Splits query on whitespace, calls funtions to make, validate and evaluate operations in correct order"""
-        self._normalize_query(query)
+        """Splits query on whitespace, calls funtions to make, validate and list operations in correct order.
 
-        q_list = query.split()
+        :param string query: Boolean query as a string. Phrases are expected to be wrapped in double quotes.
+        :return: A postfix ordered list that represents the query."""
+        norm_query = self._normalize_query(query)
+
+        q_list = norm_query.split()
 
         query = self._make_query(q_list)
         self._validate_query(query)

@@ -11,8 +11,10 @@ api = Api(search_bp)
 
 
 class SearchAPI(Resource):
+    """Contains methods for performing search over keywords."""
 
     def get(self):
+        """HTTP Get that enables boolean query processing and search."""
         query = request.args.get('query')
 
         if query is None:
@@ -31,5 +33,6 @@ class SearchAPI(Resource):
         return {
             "data": results
         }
+
 
 api.add_resource(SearchAPI, '/search')
