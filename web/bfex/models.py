@@ -44,8 +44,30 @@ class Faculty(DocType, Model):
 
     def __str__(self):
         return "<Faculty ID:{} Name: {} Email: {}".format(self.faculty_id, self.name, self.email)
-        
-class Keywords(DocType,Model):
+
+
+class Document(DocType, Model):
+    """Definition of the basic Document doctype.
+
+    Contains any information related to a Document member instance
+    pulled from scrapes.
+    Data is saved in the elaticsearch index document.
+    """
+    faculty_id = Integer(required=True)
+    source = Text(required=True)
+
+    user_keywords = Text()
+    text = Text()
+    date = Text()
+
+    class Meta:
+        index = "document"
+
+    def __str__(self):
+        return "<Faculty ID:{} Source: {} Text: {}".format(self.faculty_id, self.source, self.text)
+
+
+class Keywords(DocType, Model):
     faculty_id = Integer(required=True)
     rake_keywords = Text()
     generic_keywords = Text()
