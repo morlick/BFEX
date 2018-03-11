@@ -51,19 +51,19 @@ class ResearchIdPageScrape(Task):
                 scraper = ScraperFactory.create_scraper(faculty.research_id, ScraperType.RESEARCHID)
                 scrapps = scraper.get_scrapps()
 
-                kewords_and_description = scrapps[0]
+                keywords_and_description = scrapps[0]
                 titles = scrapps[1:]
 
                 doc = Document()
                 doc.faculty_id = faculty.faculty_id
                 doc.source = "ResearchId"
                 try:
-                    doc.text = kewords_and_description.meta_data["description"]
+                    doc.text = keywords_and_description.meta_data["description"]
                 except:
                     print("No description")
                     doc.text = ""
                 try:
-                    doc.user_keywords = kewords_and_description.meta_data["keywords"]
+                    doc.user_keywords = keywords_and_description.meta_data["keywords"]
                 except:
                     print("No keywords")
                 doc.save()
