@@ -21,29 +21,27 @@ class ResearchIdScraper(Scraper):
         for section in freebies:
             if (found is True and found_d is True):
                 break
-            try:
-                contents = section.find_all("td")
-                i = 0
-                for content in contents:
-                    if ("Keywords:" == str(content.string) and not found):
-                        # Get just the keywords and strip out other characters
-                        keywords = contents[i+1].contents[0].strip()
-                        keywords = keywords.replace("\n", "").replace(" ", "")
-                        keywords = keywords.replace("\r", "")
-                        keywords = keywords.replace("\xa0", "").split(";")
-                        scrapp.add_meta("keyword", keywords)
-                        found = True
-                    if ("Description:" in str(content.string) and not found_d):
-                        # Get the description and strip out other characters
-                        keywords = contents[i+1].string.replace("\xa0", "")
-                        scrapp.add_meta("description", keywords)
-                        found_d = True
-                    i += 1
-            except:
-                continue
-        if (scrapp.meta_data != {}):
-            scrapp.set_source(self.type)
-            scrapps.append(scrapp)
+            contents = section.find_all("td")
+            i = 0
+            for content in contents:
+                if ("Keywords:" == str(content.string) and not found):
+                    # Get just the keywords and strip out other characters
+                    keywords = contents[i+1].contents[0].strip()
+                    keywords = keywords.replace("\n", "").replace(" ", "")
+                    keywords = keywords.replace("\r", "")
+                    keywords = keywords.replace("\xa0", "").split(";")
+                    scrapp.add_meta("keywords", keywords)
+                    found = True
+                if ("Description:" in str(content.string) and not found_d):
+                    # Get the description and strip out other characters
+                    keywords = contents[i+1].string.replace("\xa0", "")
+                    scrapp.add_meta("description", keywords)
+                    found_d = True
+                i += 1
+
+        # May append a blank scrape, but first in the list is for freebies
+        scrapp.set_source(self.type)
+        scrapps.append(scrapp)
         titles = soup.find_all("input")
 
         # Get the titles
