@@ -12,6 +12,7 @@ class QueryBuilder(object):
 
         :param pf_query: Postfix ordered query list,
         :return: Elasticsearch Q object"""
+        # Single term query
         stack = Stack()
 
         if len(pf_query) == 1:
@@ -23,7 +24,6 @@ class QueryBuilder(object):
                 q2 = stack.pop()
 
                 result = q1 & q2 if token == 'AND' else q1 | q2
-                print(result)
                 stack.push(result)
             else:
                 q = None
