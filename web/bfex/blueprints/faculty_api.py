@@ -6,8 +6,6 @@ from bfex.components.data_ingestor import DataIngester
 from bfex.common.exceptions import DataIngestionException
 from bfex.common.schema import FacultySchema
 
-from bfex.tasks import add_2
-
 MB = 1024 * 1024
 
 # Setup the blueprint and add to the api.

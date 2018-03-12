@@ -10,11 +10,6 @@ def init_worker(**kwargs):
     elastic_host = os.getenv("ELASTIC_HOST", "localhost")
     connections.create_connection(hosts=[elastic_host])
 
-@celery.task(name="Add_2_to_x")
-def add_2(x):
-    print("X IS {}".format(x))
-    return x + 2
-
 
 @celery.task(name="Run Workflow", serializer="pickle")
 def run_workflow(workflow):
