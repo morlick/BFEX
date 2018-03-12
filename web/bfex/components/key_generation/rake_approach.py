@@ -7,9 +7,7 @@ import io
 class RakeApproach(KeyGenerationApproach):
     def __init__(self):
         self.description = """ Generate keyword with RAKE, extract keywords base on finding multi-word phrases containing frequent words, and filter it with stop words """
-        self.approach_id = 2
-    
-
+        self.approach_id = 1
 
     def generate_keywords(self, text):
         """ Generate keyword with RAKE, extract keywords base on finding multi-word phrases containing frequent words, and filter it with stop words
@@ -24,8 +22,7 @@ class RakeApproach(KeyGenerationApproach):
             keywords.append(keywords_with_score[n][0])
 
         return keywords
-
-               
+           
     def get_id(self):
         return self.approach_id
 

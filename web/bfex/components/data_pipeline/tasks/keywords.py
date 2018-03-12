@@ -6,7 +6,6 @@ from bfex.components.key_generation.rake_approach import *
 from bfex.components.key_generation.generic_approach import *
 
 
-
 class UpdateKeywordsFromScrape(Task):
     """
     Updates Keywords of a Faculty Members data in elastic.
@@ -36,7 +35,8 @@ class UpdateKeywordsFromScrape(Task):
         no_text_count = 0
         for faculty in data:
             faculty_name = faculty.name
-    
+            faculty_id = faculty.faculty_id
+
             search_results = Faculty.search().query('match', name=faculty_name).execute()
             if len(search_results) > 1:
                 # Shouldn't happen, but could.
@@ -44,16 +44,30 @@ class UpdateKeywordsFromScrape(Task):
         
             faculty = search_results[0]
             if faculty.text != None:
+                                
+                key_search = Keywords.search().query('match', faculty_id=faculty_id) \
+                    .query('match' , datasource = 'about') \
+                    .query('match', approach_id = 1) \
+                    .execute()
                 
-                rake = RakeApproach()
-                rake_keyword = rake.generate_keywords(faculty.text)
-                faculty.rake_keywords = rake_keyword
+                try:
+                    keywords = key_search[0]
+                except IndexError:
+                    keywords = Keywords()
 
+                keywords.faculty_id = faculty.faculty_id
+                keywords.datasource = "about"
+                keywords.approach_id = 1
+                '''
                 generic = GenericApproach()
                 generic_keyword = generic.generate_keywords(faculty.text)
-                faculty.generic_keywords = generic_keyword
+                keywords.Keywords = generic_keyword
+                '''
+                rake = RakeApproach()
+                rake_keyword = rake.generate_keywords(faculty.text)
+                keywords.Keywords = rake_keyword
+                keywords.save()
 
-                faculty.save()
             else:
                 no_text_count+=1
         print("NO TEXT COUNT = ", no_text_count)
@@ -64,7 +78,8 @@ if __name__ == "__main__":
     from elasticsearch_dsl import connections
     connections.create_connection()
     Faculty.init()
-
+    Keywords.init()
+    
     search = Faculty.search()
     allFaculty = [faculty for faculty in search.scan()]
     task = UpdateKeywordsFromScrape()

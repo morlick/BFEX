@@ -36,8 +36,6 @@ class Faculty(DocType, Model):
 
     user_keywords = Text()
     text = Text()
-    rake_keywords = Text()
-    generic_keywords = Text()
 
     class Meta:
         index = "faculty"
@@ -69,8 +67,9 @@ class Document(DocType, Model):
 
 class Keywords(DocType, Model):
     faculty_id = Integer(required=True)
-    rake_keywords = Text()
-    generic_keywords = Text()
+    datasource = Text(required=True)
+    approach_id = Integer(required=True)
+    keywords = Text()
 
     class Meta: 
         index = "keywords"
@@ -121,6 +120,7 @@ def initialize_models():
     initialized.
     """
     Faculty.init()
+    Keywords.init()
     Grant.init()
     Publication.init()
 

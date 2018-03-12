@@ -9,7 +9,7 @@ class GenericApproach(KeyGenerationApproach):
     A generic approach that finds most common words w/o stop words
     """
     def __init__(self):
-        self.approach_id = 1
+        self.approach_id = 0
         self.description = """Returns top 10 words based on word count"""
         
     def get_id(self):
