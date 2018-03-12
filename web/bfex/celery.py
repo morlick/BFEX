@@ -8,7 +8,13 @@ def make_celery():
     celery_broker = os.getenv("CELERY_BROKER", "redis://localhost:6379")
     celery_backend = os.getenv("CELERY_BACKEND", "redis://localhost:6379")
 
-    celery = Celery("bfex_celery", broker=celery_broker, backend=celery_backend, imports=('bfex.tasks',))
+    celery = Celery("bfex_celery", broker=celery_broker, 
+                    backend=celery_backend, imports=('bfex.tasks',))
+    celery.conf.update(
+        CELERY_TASK_SERIALIZER = 'pickle',
+        CELERY_RESULT_SERIALIZER = 'pickle',
+        CELERY_ACCEPT_CONTENT = ['pickle']
+    )
     # celery.conf.update(app.config)
     # TaskBase = celery.Task
     #

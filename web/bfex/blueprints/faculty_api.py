@@ -29,12 +29,6 @@ class FacultyAPI(Resource):
         """
         faculty = Faculty.safe_get(faculty_id)
 
-        task = add_2.delay(15)
-
-        result = task.get()
-
-        print("THE RESULT WAS {}".format(result))
-
         if faculty is None:
             abort(404)
 
