@@ -1,6 +1,7 @@
 import os
 from flask import Flask
-from bfex.blueprints.data_ingestion import data_ingestion_bp as data_ingestion
+from bfex.blueprints.faculty_api import faculty_bp
+from bfex.blueprints.search_api import search_bp
 from bfex.models import initialize_models
 
 
@@ -26,7 +27,8 @@ def create_app():
 
     initialize_models()
 
-    app.register_blueprint(data_ingestion)
+    app.register_blueprint(faculty_bp)
+    app.register_blueprint(search_bp)
 
     return app
 

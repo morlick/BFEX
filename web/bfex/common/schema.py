@@ -17,6 +17,7 @@ class FacultySchema(Schema):
     google_scholar = fields.String(load_from="googleScholarId")
     orc_id = fields.String(load_from="orcId")
     sciverse_id = fields.String(load_from="sciverseId")
+    research_id = fields.String(load_from="researchId")
 
     @post_load
     def _create_faculty(self, data):
