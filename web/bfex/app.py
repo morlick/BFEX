@@ -22,14 +22,15 @@ def create_app():
     
     app = Flask("bfex")
     
+    # Elasticsearch connection setup
     elastic_host = os.getenv("ELASTIC_HOST", "localhost")
     connections.create_connection(hosts=[elastic_host])
-
     initialize_models()
 
     app.register_blueprint(faculty_bp)
     app.register_blueprint(search_bp)
 
     return app
+
 
 app = create_app()

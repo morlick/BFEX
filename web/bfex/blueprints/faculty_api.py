@@ -6,6 +6,8 @@ from bfex.components.data_ingestor import DataIngester
 from bfex.common.exceptions import DataIngestionException
 from bfex.common.schema import FacultySchema
 
+from bfex.tasks import add_2
+
 MB = 1024 * 1024
 
 # Setup the blueprint and add to the api.
@@ -26,6 +28,12 @@ class FacultyAPI(Resource):
                 HTTP 200 if the id exists and the GET operation succeeds.
         """
         faculty = Faculty.safe_get(faculty_id)
+
+        task = add_2.delay(15)
+
+        result = task.get()
+
+        print("THE RESULT WAS {}".format(result))
 
         if faculty is None:
             abort(404)
