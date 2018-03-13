@@ -44,7 +44,10 @@ class ResearchIdPageScrape(Task):
             if len(search_results) > 1:
                 # Shouldn't happen, but could.
                 raise WorkflowException("Professor id is ambiguous during search ... More than 1 result")
-        
+
+            search_dup = Document.search().query('match', faculty_id=faculty.faculty_id).query("match", source="ResearchId").execute()
+            for doc in search_dup:
+                doc.delete()
             faculty = search_results[0]
             if faculty.research_id is not None:
                 
@@ -85,6 +88,7 @@ if __name__ == "__main__":
     from elasticsearch_dsl import connections
     connections.create_connection()
     Faculty.init()
+    Document.init()
 
     search = Faculty.search()
     allFaculty = [faculty for faculty in search.scan()]
