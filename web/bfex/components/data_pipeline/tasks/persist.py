@@ -1,6 +1,6 @@
 from bfex.components.data_pipeline.tasks import Task
 from bfex.components.scraper.scrapp import Scrapp
-from bfex.models import Faculty
+from bfex.models import Faculty, Document
 from bfex.common.exceptions import WorkflowException
 from bfex.components.key_generation.rake_approach import *
 
@@ -54,9 +54,14 @@ class UpdateFacultyFromScrape(Task):
                 faculty.research_id = scrapp.meta_data["researchid_link"]
 
             if "text" in scrapp.meta_data:
-                 faculty.text = scrapp.meta_data["text"]
+                doc = Document()
+                doc.faculty_id = faculty.faculty_id
+                doc.source = "profile"
+                doc.text = scrapp.meta_data["text"]
+                doc.save()
 
             faculty.save()
+            docs.append(doc)
 
         return faculty
 
