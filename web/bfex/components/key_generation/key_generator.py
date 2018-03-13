@@ -13,8 +13,7 @@ class KeyGenerator:
         """ Iterates through each registered approach and returns their result"""
         result = {}
         for id in self.approaches.keys():
-            approach = self.approaches[id]()
-            result[id] = approach.generate_keywords(text)
+            result[id] = self.approaches[id].generate_keywords(text)
         return result
 
     def register_approach(self, obj, approachId):

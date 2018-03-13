@@ -34,10 +34,13 @@ class GetKeywordsFromScrape(Task):
         time.sleep(1)
         search_results = Document.search().query('match', faculty_id=faculty_id).execute()
         for document in search_results:
-            #Approaches will be registered somewhere else one day - but today, is not that day                    
+            #Approaches will be registered somewhere else                  
             key_generator  = KeyGenerator()
-            key_generator.register_approach(GenericApproach, 0)
-            key_generator.register_approach(RakeApproach, 1)
+            my_generic_approach = GenericApproach()
+            my_rake_approach = RakeApproach()
+
+            key_generator.register_approach(my_generic_approach, 0)
+            key_generator.register_approach(my_rake_approach, 1)
 
             keys = key_generator.generate_keywords(document.text)
 
