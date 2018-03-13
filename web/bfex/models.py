@@ -53,7 +53,7 @@ class Keywords(DocType,Model):
         index = "keywords"
 
     def __str__(self):
-        return "<Faculty ID:{} Keywords From Rake :{}>".format(self.faculty_id,self.rake_keywords)
+        return "<Faculty ID:{} Keywords:{}>".format(self.faculty_id,self.keywords)
 
 
 class Grant(DocType):
