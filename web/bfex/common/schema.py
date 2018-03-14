@@ -23,3 +23,19 @@ class FacultySchema(Schema):
     def _create_faculty(self, data):
         """Turns the extracted json data into an instance of Faculty"""
         return Faculty(meta={'id': data["faculty_id"]}, **data)
+
+
+class KeywordSchema(Schema):
+    """Marshmallow schema used for validating Faculty JSON objects.
+    A marshmallow schema allows us to easily extract information from JSON input, while at the same time, performing
+    basic validation of that data.
+    """
+    faculty_id = fields.Integer(load_from="id", required=True)
+    datasource = fields.String()
+    approach_id = fields.Integer()
+    keywords = fields.String()
+
+    @post_load
+    def _create_faculty(self, data):
+        """Turns the extracted json data into an instance of Faculty"""
+        return Keywords(meta={'id': data["faculty_id"], 'datasource': data['datasource'], 'approach_id': data['approach_id']}, **data)
