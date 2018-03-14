@@ -12,10 +12,6 @@ class GenericApproach(KeyGenerationApproach):
         self.approach_id = 1
         self.description = """Returns top 10 words based on word count"""
         
-    def get_id(self):
-        """The assigned id for the approach"""
-        return self.approach_id
-
     def generate_keywords(self, text):
         """Tokenizes, remove stopwords, removes some punctuation, and counts word frequency
 
@@ -38,3 +34,8 @@ class GenericApproach(KeyGenerationApproach):
             ret.append(key)
 
         return ret[:10]
+
+    def get_id(self):
+        """The assigned id for the approach"""
+        return self.approach_id
+     
