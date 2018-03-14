@@ -48,3 +48,5 @@ def initialize_keygen():
 
 if __name__ == "__main__":
     initialize_keygen()
+    if len(self.approaches) > 0:
+        del self.approaches[approachId]
