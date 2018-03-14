@@ -34,6 +34,8 @@ class ProfileScraper(Scraper):
                     scrapp.add_meta("orcid_link", link.attrs['href'])
                 if "researcherid" in link.attrs['href']:
                     scrapp.add_meta("researchid_link", link.attrs['href'])
+                if "scholar.google" in link.attrs['href']:
+                    scrapp.add_meta("googlescholar_link", link.attrs['href'])
             except KeyError:
                 # not all 'a' tags have the links we want
                 continue

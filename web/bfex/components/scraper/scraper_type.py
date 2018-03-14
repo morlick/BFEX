@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class ScraperType(Enum):
     """ Enum class to keep track of all the different types of web pages 
         we can scrape.
@@ -7,3 +8,4 @@ class ScraperType(Enum):
     ORCID = 1
     RESEARCHID = 2
     PROFILE = 3
+    GOOGLESCHOLAR = 4
