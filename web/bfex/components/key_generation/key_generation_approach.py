@@ -13,7 +13,7 @@ class KeyGenerationApproach(ABC):
         self.approach_id = approach_id
         self.description = description
         
-    def generate_keywords(self,scrapp):
+    def generate_keywords(self,text):
         """ keyword generation algorithm implementation"""
         pass
 

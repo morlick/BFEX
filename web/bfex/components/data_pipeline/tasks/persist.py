@@ -1,6 +1,6 @@
 from bfex.components.data_pipeline.tasks import Task
 from bfex.components.scraper.scrapp import Scrapp
-from bfex.models import Faculty
+from bfex.models import Faculty, Document, Keywords
 from bfex.common.exceptions import WorkflowException
 from bfex.components.key_generation.rake_approach import *
 
@@ -57,14 +57,67 @@ class UpdateFacultyFromScrape(Task):
                 faculty.google_scholar = scrapp.meta_data["googlescholar_link"]
 
             if "text" in scrapp.meta_data:
-                 faculty.text = scrapp.meta_data["text"]
+                doc_search = Document.search().query('match', faculty_id=faculty.faculty_id) \
+                    .query('match', source = "profile") \
+                    .execute()
+                try:
+                    doc = doc_search[0]
+                except IndexError:
+                    doc = Document()
+                    doc.faculty_id = faculty.faculty_id
+                    doc.source = "profile"
+
+                doc.text = scrapp.meta_data["text"]
+                doc.save()
 
             faculty.save()
 
         return faculty
 
 
+class UpdateKeywordsFromGenerator(Task):
+    """Updates a Keyword index in elastic, given a list of keword objects."""
+
+    def __init__(self):
+        self.task_name = "Update Keywords From Generator"
+
+    def is_requirement_satisfied(self, data):
+        """
+
+        :param data: Expected to be a list of keyword objects.
+        :returns True if the data is of the form above, else False.
+        """
+        satisfied = True
+
+        return satisfied
+
+    def run(self, data):
+        """Updates a Keyword object information in Elasticsearch, based on the generator results.
+
+        :param data: list of keyword objects
+        :return:  returns True.
+        """
+
+        for key_object in data:
+            key_search = Keywords.search().query('match', faculty_id=key_object.faculty_id) \
+                .query('match' , datasource = key_object.datasource) \
+                .query('match', approach_id = key_object.approach_id) \
+                .execute()
+                
+            try:
+                keywords = key_search[0]
+            except IndexError:
+                keywords = Keywords()
+                keywords.faculty_id = key_object.faculty_id
+                keywords.datasource = key_object.datasource
+                keywords.approach_id = key_object.approach_id
+
+            keywords.keywords = key_object.keywords
+            keywords.save()
+        return True
+
 if __name__ == "__main__":
     from elasticsearch_dsl import connections
     connections.create_connection()
     Faculty.init()
+    Keywords.init()

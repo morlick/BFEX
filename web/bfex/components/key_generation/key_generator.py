@@ -9,11 +9,11 @@ class KeyGenerator:
         """
         self.approaches = {}
 
-    def generate_keywords(self, scrapp):
+    def generate_keywords(self, text):
         """ Iterates through each registered approach and returns their result"""
         result = {}
         for id in self.approaches.keys():
-            result[id] = self.approaches[id].generate_keywords(scrapp)
+            result[id] = self.approaches[id].generate_keywords(text)
         return result
 
     def register_approach(self, obj, approachId):
