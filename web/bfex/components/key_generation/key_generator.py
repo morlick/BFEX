@@ -22,4 +22,5 @@ class KeyGenerator:
 
     def deregister_approach(self, approachId):
         """ Removes approach obj """
-        del self.approaches[approachId]
+        if len(self.approaches) > 0:
+            del self.approaches[approachId]
