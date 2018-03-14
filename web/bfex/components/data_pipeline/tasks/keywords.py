@@ -4,6 +4,7 @@ from bfex.models import *
 from bfex.common.exceptions import WorkflowException
 from bfex.components.key_generation.rake_approach import *
 from bfex.components.key_generation.generic_approach import *
+from bfex.components.key_generation.textrank_approach import *
 from bfex.components.key_generation.key_generator import KeyGenerator
 import time
 

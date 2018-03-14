@@ -20,12 +20,10 @@ class ResearchIdPageScrape(Task):
         """
         satisfied = True
 
-        for faculty in data:
-
-            if (not isinstance(faculty, tuple) or
-                    not isinstance(faculty[0], str) or
-                    not isinstance(faculty[1], Scrapp)):
-                satisfied = False
+        if (not isinstance(data, tuple) or
+                not isinstance(data[0], str) or
+                not isinstance(data[1], Scrapp)):
+            satisfied = False
 
         return satisfied
 

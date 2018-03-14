@@ -17,7 +17,7 @@ class FacultyPageScrape(Task):
         :param list data: list of all faculty
         :return: True if valid data, otherwise false
         """
-        data = data[0]
+
         # Should this return the data as it is expected for running the task?
         if isinstance(data, str):
             # Apply any additional checks or validations that need to occur on the data
@@ -32,24 +32,15 @@ class FacultyPageScrape(Task):
         :param data: str or Faculty instance.
         :return: tuple of the faculty name and Scrapp produced by scraping the faculty directory page.
         """
+
+        faculty_directory_url = URLs.build_faculty_url(data)
+
+        scraper = ScraperFactory.create_scraper(faculty_directory_url, ScraperType.PROFILE)
+        scrapp = scraper.get_scrapps()[0]
+
+        tuple = (data,scrapp)
         
-        tuplelist=[]
-        for faculty in data:
-            if isinstance(faculty, str):
-                faculty_name = faculty
-            else:
-                faculty_name = faculty.name
-
-            faculty_directory_url = URLs.build_faculty_url(faculty_name)
-
-            scraper = ScraperFactory.create_scraper(faculty_directory_url, ScraperType.PROFILE)
-            scrapp = scraper.get_scrapps()[0]
-
-            tuple = (faculty_name,scrapp)
-            tuplelist.append(tuple)
-            print(tuple)
-        
-        return tuplelist
+        return tuple
 
 
 if __name__ == "__main__":
