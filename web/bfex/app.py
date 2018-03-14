@@ -32,7 +32,6 @@ def create_app():
     elastic_host = os.getenv("ELASTIC_HOST", "localhost")
     connections.create_connection(hosts=[elastic_host])
     initialize_models()
-    initialize_keygen()
 
     app.register_blueprint(faculty_bp)
     app.register_blueprint(search_bp)
