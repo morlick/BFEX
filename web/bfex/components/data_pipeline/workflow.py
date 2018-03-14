@@ -79,7 +79,7 @@ if __name__ == "__main__":
     Document.init()
     Keywords.init()
 
-    tasks = [GetFacultyFromElasticSearch, FacultyPageScrape, GoogleScholarPageScrape, ResearchIdPageScrape, UpdateFacultyFromScrape, UpdateKeywordsFromGenerator]
+    tasks = [GetFacultyFromElasticSearch, FacultyPageScrape, GoogleScholarPageScrape, ResearchIdPageScrape, UpdateFacultyFromScrape, GetKeywordsFromScrape, UpdateKeywordsFromGenerator]
 
 
     workflow_manager = Workflow(tasks)
