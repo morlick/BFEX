@@ -47,9 +47,7 @@ class GoogleScholarPageScrape(Task):
 
             search_dup = Document.search().query('match', faculty_id=faculty.faculty_id).query("match", source="GoogleScholar")
             search_dup.delete()
-            # for doc in search_dup:
-            #     print(doc.text)
-            #     doc.delete()
+
             faculty = search_results[0]
             if faculty.google_scholar is not None and "http" in faculty.google_scholar:
                 scraper = ScraperFactory.create_scraper(faculty.google_scholar, ScraperType.GOOGLESCHOLAR)
