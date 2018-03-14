@@ -4,6 +4,7 @@ from bfex.models import *
 from bfex.common.exceptions import WorkflowException
 from bfex.components.key_generation.rake_approach import *
 from bfex.components.key_generation.generic_approach import *
+from bfex.components.key_generation.textrank_approach import *
 from bfex.components.key_generation.key_generator import KeyGenerator
 import time
 
@@ -43,9 +44,12 @@ class GetKeywordsFromScrape(Task):
             key_generator  = KeyGenerator()
             my_generic_approach = GenericApproach()
             my_rake_approach = RakeApproach()
+            my_textrank_approach = TextrankApproach()
 
             key_generator.register_approach(my_generic_approach, 0)
             key_generator.register_approach(my_rake_approach, 1)
+            key_generator.register_approach(my_textrank_approach, 2)
+
 
             keys = key_generator.generate_keywords(document.text)
 
