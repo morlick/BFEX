@@ -1,5 +1,5 @@
 from bfex.models import *
-from .key_generation_approach import KeyGenerationApproach
+from bfex.components.key_generation.key_generation_approach import KeyGenerationApproach
 from nltk.corpus import stopwords
 from nltk.tokenize import wordpunct_tokenize
 from collections import Counter

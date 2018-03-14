@@ -1,8 +1,7 @@
 from bfex.common.singleton_decorator import Singleton
 from bfex.common.utils import ConfigFile
-from bfex.components.key_generation.generic_approach import *
-from bfex.components.key_generation.textrank_approach import *
-from bfex.components.key_generation.rake_approach import *
+from bfex.components.key_generation import *
+import sys, inspect
 
 @Singleton
 class KeyGenerator:
@@ -39,7 +38,13 @@ class KeyGenerator:
 def initialize_keygen():
     key_generator = KeyGenerator.instance()
     key_generator.filter_approaches(ConfigFile().data['keygen_ids'])
-    key_generator.register_approach(GenericApproach, 0)
-    key_generator.register_approach(RakeApproach, 1)
-    key_generator.register_approach(TextrankApproach, 2)
-    
+
+    classes = inspect.getmembers(sys.modules[__name__], inspect.isclass)
+    approaches = [a for a in classes if 'Approach' in a[0]]
+    for name, approach_class in approaches:
+        instance = approach_class()
+        approach_id = instance.get_id()
+        key_generator.register_approach(instance, approach_id)
+
+if __name__ == "__main__":
+    initialize_keygen()

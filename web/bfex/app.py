@@ -24,7 +24,6 @@ def create_app():
     from elasticsearch_dsl.connections import connections
     
     app = Flask("bfex")
-    
     # Config setup
     if 'BFEX_WORKSPACE' not in os.environ:
         os.environ['BFEX_WORKSPACE'] = os.path.dirname(os.path.realpath(__file__))
