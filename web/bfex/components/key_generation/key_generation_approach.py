@@ -1,6 +1,5 @@
 from abc import ABC
 import json
-from bfex.components.key_generation.key_generator import *
 
 
 class KeyGenerationApproach(ABC):

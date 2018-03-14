@@ -5,6 +5,7 @@ from bfex.blueprints.search_api import search_bp
 from bfex.models import initialize_models
 from bfex.components.key_generation.rake_approach import *
 from bfex.components.key_generation.generic_approach import *
+from bfex.components.key_generation.key_generator import *
 
 
 def create_app():
@@ -24,19 +25,18 @@ def create_app():
     
     app = Flask("bfex")
     
+    # Config setup
+    if 'BFEX_WORKSPACE' not in os.environ:
+        os.environ['BFEX_WORKSPACE'] = os.path.dirname(os.path.realpath(__file__))
+
     # Elasticsearch connection setup
     elastic_host = os.getenv("ELASTIC_HOST", "localhost")
     connections.create_connection(hosts=[elastic_host])
     initialize_models()
+    initialize_keygen()
 
     app.register_blueprint(faculty_bp)
     app.register_blueprint(search_bp)
-    #register_approach(GenericApproach, 0)
-    #register_approach(RakeApproach, 1)
-    #key_generator = KeyGenerator()
-    #key_generator.register_approach(GenericApproach, 0)
-    #key_generator.register_approach(RakeApproach, 1)
-    #app.register_blueprint(data_ingestion)
 
     return app
 

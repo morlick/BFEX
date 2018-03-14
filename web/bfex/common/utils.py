@@ -2,7 +2,8 @@ import re
 from html import unescape
 import nltk
 import string
-
+import os
+import json
 
 def generate_names_from_json(item):
     name_from_json = item['name']
@@ -71,6 +72,14 @@ class TextNormalizer:
         # Normalize all the text to lower case
         normalized = no_punc.lower()
         return normalized
+
+class ConfigFile:
+    def __init__(self):
+        self.data = []
+        workspace = os.getenv("BFEX_WORKSPACE", "localhost")
+        path = '{}/{}'.format(workspace, 'config.json')
+        with open(path) as json_config_file:
+            self.data = json.load(json_config_file)
 
 
 if __name__ == "__main__":
