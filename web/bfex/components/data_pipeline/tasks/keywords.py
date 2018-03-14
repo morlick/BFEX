@@ -4,68 +4,69 @@ from bfex.models import *
 from bfex.common.exceptions import WorkflowException
 from bfex.components.key_generation.rake_approach import *
 from bfex.components.key_generation.generic_approach import *
+from bfex.components.key_generation.key_generator import KeyGenerator
+import time
 
-
-
-class UpdateKeywordsFromScrape(Task):
+class GetKeywordsFromScrape(Task):
     """
     Updates Keywords of a Faculty Members data in elastic.
     """
     def __init__(self):
         self.task_name = "Update Keywords From Scrape"
 
-    def is_requirement_satisfied(self, data):
+    def is_requirement_satisfied(self, faculty):
+        """Verifies that the data is acceptable and has the faculty_id.
+
+        :param faculty: Expected to be a faculty object with an id.
+        :returns True if the data is of the form above, else False.
+        """
         satisfied = True
 
-        for faculty in data:
-
-            if (not isinstance(faculty, tuple) or
-                    not isinstance(faculty[0], str) or
-                    not isinstance(faculty[1], Scrapp)):
-                satisfied = False
+        if (not isinstance(faculty.faculty_id, int)):
+            satisfied = False
 
         return satisfied
 
 
-    def run(self,data):
-        """ Updates keywords of all profs
+    def run(self,faculty):
+        """ Updates keywords of a prof
 
-        :param data is a faculty object
-        :return: last faculty member handled
+        :param faculty is a faculty object
+        :return: list of keyword objects
         """
-        no_text_count = 0
-        for faculty in data:
-            faculty_name = faculty.name
-    
-            search_results = Faculty.search().query('match', name=faculty_name).execute()
-            if len(search_results) > 1:
-                # Shouldn't happen, but could.
-                raise WorkflowException("Professor id is ambiguous during search... More than 1 result")
-        
-            faculty = search_results[0]
-            if faculty.text != None:
-                
-                rake = RakeApproach()
-                rake_keyword = rake.generate_keywords(faculty.text)
-                faculty.rake_keywords = rake_keyword
+        key_objects= []
+        faculty_id = faculty.faculty_id
+        time.sleep(1)
+        search_results = Document.search().query('match', faculty_id=faculty_id).execute()
+        for document in search_results:
+            #Approaches will be registered somewhere else                  
+            key_generator  = KeyGenerator()
+            my_generic_approach = GenericApproach()
+            my_rake_approach = RakeApproach()
 
-                generic = GenericApproach()
-                generic_keyword = generic.generate_keywords(faculty.text)
-                faculty.generic_keywords = generic_keyword
+            key_generator.register_approach(my_generic_approach, 0)
+            key_generator.register_approach(my_rake_approach, 1)
 
-                faculty.save()
-            else:
-                no_text_count+=1
-        print("NO TEXT COUNT = ", no_text_count)
-        return faculty
+            keys = key_generator.generate_keywords(document.text)
+
+            for approach in keys:
+                keywords = Keywords()
+                keywords.faculty_id = document.faculty_id
+                keywords.datasource = document.source
+                keywords.approach_id = approach
+                keywords.keywords = keys[approach]
+
+                key_objects.append(keywords)
+
+        return key_objects
 
 
 if __name__ == "__main__":
     from elasticsearch_dsl import connections
     connections.create_connection()
-    Faculty.init()
+    Keywords.init()
 
-    search = Faculty.search()
-    allFaculty = [faculty for faculty in search.scan()]
-    task = UpdateKeywordsFromScrape()
-    task.run(allFaculty)
+    #search = Document.search()
+    #allDocument = [document for document in search.scan()]
+    #task = GetKeywordsFromScrape()
+    #task.run(allDocument)

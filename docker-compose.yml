@@ -16,6 +16,14 @@ services:
       - esdata:/usr/share/elastic/data
     ports:
       - 9200:9200
+
+  redis:
+    container_name: redis
+    image: redis:4.0.8-alpine
+    volumes:
+      - 'redis:/data'
+    ports:
+      - '6379:6379'
   
   bfex:
     build: ./web
@@ -25,8 +33,21 @@ services:
     command: ["./bin/wait_for_elastic.sh", "elastic", "/opt/conda/envs/BFEX/bin/gunicorn -w 2 -b :8000 bfex.app:app"]
     depends_on:
       - elastic
-    environment:
-      ELASTIC_HOST: elastic
+      - redis
+    env_file:
+      - .env
+    
+  celery:
+    build: ./web
+    restart: always
+    volumes:
+      - .:/usr/app
+    depends_on:
+      - redis
+      - elastic
+    command: "/opt/conda/envs/BFEX/bin/celery worker -l debug -A bfex.tasks"
+    env_file:
+      - .env
   
   nginx:
     build: ./nginx
@@ -38,4 +59,6 @@ services:
 
 volumes:
   esdata:
+    driver: local
+  redis:
     driver: local

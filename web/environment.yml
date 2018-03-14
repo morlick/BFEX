@@ -23,3 +23,5 @@ dependencies:
   - gunicorn==19.7.1
   - pytest==3.4.0
   - nltk==3.2.5
+  - redis==2.10.6
+  - celery==4.1.0

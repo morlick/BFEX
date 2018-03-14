@@ -3,9 +3,12 @@ from collections.abc import Sequence
 from marshmallow.exceptions import ValidationError
 from bfex.common.schema import *
 from bfex.common.exceptions import DataIngestionException
-
+from bfex.components.data_pipeline.tasks import GetFacultyFromElasticSearch, FacultyPageScrape, UpdateFacultyFromScrape
+from bfex.tasks import run_workflow
+from bfex.components.data_pipeline.workflow import Workflow
 
 class DataIngester(object):
+    INITIAL_PAGE_SCRAPE = [GetFacultyFromElasticSearch, FacultyPageScrape, UpdateFacultyFromScrape]
 
     @staticmethod
     def create_faculty(json_data, write=True):
@@ -38,6 +41,10 @@ class DataIngester(object):
         for faculty_member in json_data:
             count += 1
             DataIngester.create_faculty(faculty_member, write)
+
+        # TODO: This should be running in the create_faculty, once we fix the workflow.
+        workflow = Workflow(DataIngester.INITIAL_PAGE_SCRAPE)
+        run_workflow.apply_async((workflow,), countdown=5)
         print("Ingested {} faculty members".format(count))
 
     @staticmethod
