@@ -73,10 +73,12 @@ class Workflow(object):
 
 
 if __name__ == "__main__":
-    from bfex.components.data_pipeline.tasks import FacultyPageScrape, UpdateFacultyFromScrape, GetFacultyFromElasticSearch,UpdateKeywordsFromScrape
+    from bfex.components.data_pipeline.tasks import *
     from elasticsearch_dsl import connections
     connections.create_connection()
+    Keywords.init()
+    Document.init()
 
-    tasks = [GetFacultyFromElasticSearch, FacultyPageScrape, UpdateFacultyFromScrape]
+    tasks = [GetFacultyFromElasticSearch, FacultyPageScrape, UpdateFacultyFromScrape, GetKeywordsFromScrape, UpdateKeywordsFromGenerator]
     workflow_manager = Workflow(tasks)
     workflow_manager.run()

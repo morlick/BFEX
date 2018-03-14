@@ -35,48 +35,25 @@ class Faculty(DocType, Model):
     research_id = Text()
 
     user_keywords = Text()
-    text = Text()
-    rake_keywords = Text()
-    generic_keywords = Text()
 
     class Meta:
         index = "faculty"
 
     def __str__(self):
         return "<Faculty ID:{} Name: {} Email: {}".format(self.faculty_id, self.name, self.email)
+        
 
-
-class Document(DocType, Model):
-    """Definition of the basic Document doctype.
-
-    Contains any information related to a Document member instance
-    pulled from scrapes.
-    Data is saved in the elaticsearch index document.
-    """
+class Keywords(DocType,Model):
     faculty_id = Integer(required=True)
-    source = Text(required=True)
-
-    user_keywords = Text()
-    text = Text()
-    date = Text()
-
-    class Meta:
-        index = "document"
-
-    def __str__(self):
-        return "<Faculty ID:{} Source: {} Text: {}".format(self.faculty_id, self.source, self.text)
-
-
-class Keywords(DocType, Model):
-    faculty_id = Integer(required=True)
-    rake_keywords = Text()
-    generic_keywords = Text()
+    datasource = Text(required=True)
+    approach_id = Integer(required=True)
+    keywords = Text()
 
     class Meta: 
         index = "keywords"
 
     def __str__(self):
-        return "<Faculty ID:{} Keywords From Rake :{}>".format(self.faculty_id,self.rake_keywords)
+        return "<Faculty ID:{} Keywords:{}>".format(self.faculty_id,self.keywords)
 
 
 class Grant(DocType):
@@ -116,13 +93,36 @@ class Publication(DocType):
         index = "publications"
 
 
+class Document(DocType, Model):
+    """Definition of the basic Document doctype.
+
+    Contains any information related to a Document member instance
+    pulled from scrapes.
+    Data is saved in the elaticsearch index document.
+    """
+    faculty_id = Integer(required=True)
+    source = Text(required=True)
+
+    user_keywords = Text()
+    text = Text()
+    date = Text()
+
+    class Meta:
+        index = "document"
+
+    def __str__(self):
+        return "<Faculty ID:{} Source: {} Text: {}".format(self.faculty_id, self.source, self.text)
+
+
 def initialize_models():
     """Initializes the mappings of all models in ElasticSearch. Expects that a connection to elastic has already been
     initialized.
     """
     Faculty.init()
+    Keywords.init()
     Grant.init()
     Publication.init()
+    Document.init()
 
 
 # if __name__ == "__main__":

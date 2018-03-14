@@ -89,7 +89,7 @@ if __name__ == "__main__":
     connections.create_connection()
     Faculty.init()
     Document.init()
-
+    
     search = Faculty.search()
     allFaculty = [faculty for faculty in search.scan()]
     task = ResearchIdPageScrape()

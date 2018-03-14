@@ -4,7 +4,6 @@ from bfex.models import Faculty
 from bfex.common.utils import URLs, FacultyNames
 from bfex.components.data_pipeline.tasks.task import Task
 from bfex.components.key_generation.rake_approach import *
-from bfex.components.data_pipeline.tasks.keywords import UpdateKeywordsFromScrape
 
 class FacultyPageScrape(Task):
     def __init__(self):

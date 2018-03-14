@@ -3,6 +3,8 @@ from flask import Flask
 from bfex.blueprints.faculty_api import faculty_bp
 from bfex.blueprints.search_api import search_bp
 from bfex.models import initialize_models
+from bfex.components.key_generation.rake_approach import *
+from bfex.components.key_generation.generic_approach import *
 
 
 def create_app():
@@ -29,6 +31,12 @@ def create_app():
 
     app.register_blueprint(faculty_bp)
     app.register_blueprint(search_bp)
+    #register_approach(GenericApproach, 0)
+    #register_approach(RakeApproach, 1)
+    #key_generator = KeyGenerator()
+    #key_generator.register_approach(GenericApproach, 0)
+    #key_generator.register_approach(RakeApproach, 1)
+    #app.register_blueprint(data_ingestion)
 
     return app
 
