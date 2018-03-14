@@ -18,8 +18,8 @@ class GetFacultyFromElasticSearch(Task):
         :return: True if data is null. Data should be null as we pass 
         nothing into it to run the code
         """
-
-        return data == None
+        #bad code, TODO: remove @garry
+        return True
 
     def run(self, data):
         """ Searches through all results in elastic search

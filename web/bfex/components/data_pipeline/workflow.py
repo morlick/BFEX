@@ -79,6 +79,16 @@ if __name__ == "__main__":
     Keywords.init()
     Document.init()
 
-    tasks = [GetFacultyFromElasticSearch, FacultyPageScrape, UpdateFacultyFromScrape, GetKeywordsFromScrape, UpdateKeywordsFromGenerator]
-    workflow_manager = Workflow(tasks)
-    workflow_manager.run()
+    search = Faculty.search()
+    allFaculty = [faculty for faculty in search.scan()]
+    for faculty in allFaculty:
+
+        if isinstance(faculty, str):
+            faculty_name = faculty
+        else:
+            faculty_name = faculty.name
+        print(faculty)
+
+        tasks = [FacultyPageScrape, UpdateFacultyFromScrape, GetKeywordsFromScrape, UpdateKeywordsFromGenerator]
+        workflow_manager = Workflow(tasks, faculty_name)
+        workflow_manager.run()
