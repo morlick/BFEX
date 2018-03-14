@@ -30,16 +30,13 @@ def create_app():
 
     initialize_models()
 
-<<<<<<< HEAD
     app.register_blueprint(faculty_bp)
     app.register_blueprint(search_bp)
     #register_approach(GenericApproach, 0)
     #register_approach(RakeApproach, 1)
-=======
-    key_generator = KeyGenerator()
-    key_generator.register_approach(GenericApproach, 0)
-    key_generator.register_approach(RakeApproach, 1)
->>>>>>> keyword generator
+    #key_generator = KeyGenerator()
+    #key_generator.register_approach(GenericApproach, 0)
+    #key_generator.register_approach(RakeApproach, 1)
 
     app.register_blueprint(data_ingestion)
 
