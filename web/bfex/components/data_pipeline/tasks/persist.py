@@ -53,6 +53,9 @@ class UpdateFacultyFromScrape(Task):
             if "researchid_link" in scrapp.meta_data:
                 faculty.research_id = scrapp.meta_data["researchid_link"]
 
+            if "googlescholar_link" in scrapp.meta_data:
+                faculty.google_scholar = scrapp.meta_data["googlescholar_link"]
+
             if "text" in scrapp.meta_data:
                 doc_search = Document.search().query('match', faculty_id=faculty.faculty_id) \
                     .query('match', source = "profile") \

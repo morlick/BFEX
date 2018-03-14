@@ -1,6 +1,7 @@
 from bfex.components.scraper.orcid_scraper import *
 from bfex.components.scraper.researchid_scraper import *
 from bfex.components.scraper.profile_scraper import *
+from bfex.components.scraper.google_scholar_scraper import *
 from bfex.components.scraper.scraper_type import *
 
 
@@ -25,3 +26,5 @@ class ScraperFactory(object):
             return ResearchIdScraper(url, type)
         if type == ScraperType.PROFILE:
             return ProfileScraper(url, type)
+        if type == ScraperType.GOOGLESCHOLAR:
+            return GoogleScholarScraper(url, type)

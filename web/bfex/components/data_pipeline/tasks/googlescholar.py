@@ -7,14 +7,14 @@ from bfex.components.data_pipeline.tasks.task import Task
 from bfex.components.key_generation.rake_approach import *
 
 
-class ResearchIdPageScrape(Task):
+class GoogleScholarPageScrape(Task):
     def __init__(self):
-        super().__init__("ResearchId Page Scrape")
+        super().__init__("Google Scholar Page Scrape")
 
     def is_requirement_satisfied(self, data):
         """ Checks the requirements for a faculty page scraping are satisfied.
 
-        For a ResearchId page scrape, we get the links from ElasticSearch.
+        For a Google Scholar page scrape, we get the links from ElasticSearch.
         :param list data: list of all faculty
         :return: True if valid data, otherwise false
         """
@@ -31,7 +31,7 @@ class ResearchIdPageScrape(Task):
 
     def run(self, data):
 
-        """Performs a scraping of a faculty members ResearchId page.
+        """Performs a scraping of a faculty members GoogleScholar page.
         :param data is a faculty object
         :return: last faculty member handled
         """
@@ -45,38 +45,19 @@ class ResearchIdPageScrape(Task):
                 # Shouldn't happen, but could.
                 raise WorkflowException("Professor id is ambiguous during search ... More than 1 result")
 
-            search_dup = Document.search().query('match', faculty_id=faculty.faculty_id).query("match", source="ResearchId")
+            search_dup = Document.search().query('match', faculty_id=faculty.faculty_id).query("match", source="GoogleScholar")
             search_dup.delete()
+
             faculty = search_results[0]
-            if faculty.research_id is not None:
-                
-                scraper = ScraperFactory.create_scraper(faculty.research_id, ScraperType.RESEARCHID)
+            if faculty.google_scholar is not None and "http" in faculty.google_scholar:
+                scraper = ScraperFactory.create_scraper(faculty.google_scholar, ScraperType.GOOGLESCHOLAR)
                 scrapps = scraper.get_scrapps()
-
-                keywords_and_description = scrapps[0]
-                titles = scrapps[1:]
-
-                doc = Document()
-                doc.faculty_id = faculty.faculty_id
-                doc.source = "ResearchId"
-                try:
-                    doc.text = keywords_and_description.meta_data["description"]
-                except:
-                    print("No description")
-                    doc.text = ""
-                try:
-                    doc.user_keywords = keywords_and_description.meta_data["keywords"]
-                except:
-                    print("No keywords")
-                doc.save()
-
-                for scrapp in titles:
+                for scrapp in scrapps:
                     doc = Document()
-                    doc.source = "ResearchId"
+                    doc.source = "GoogleScholar"
                     doc.faculty_id = faculty.faculty_id
                     doc.text = scrapp.title
                     doc.save()
-
             else:
                 no_text_count += 1
         print("NO TEXT COUNT = ", no_text_count)
@@ -88,8 +69,8 @@ if __name__ == "__main__":
     connections.create_connection()
     Faculty.init()
     Document.init()
-    
+
     search = Faculty.search()
     allFaculty = [faculty for faculty in search.scan()]
-    task = ResearchIdPageScrape()
+    task = GoogleScholarPageScrape()
     task.run(allFaculty)
