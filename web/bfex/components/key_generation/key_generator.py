@@ -23,7 +23,7 @@ class KeyGenerator:
         for name, approach_class in approaches:
             instance = approach_class()
             approach_id = instance.get_id()
-            key_generator.register_approach(instance, approach_id)
+            self.register_approach(instance, approach_id)
 
     def filter_approaches(self, allowed_ids=[]):
         self.allowed_ids = allowed_ids
@@ -43,3 +43,7 @@ class KeyGenerator:
     def deregister_approach(self, approachId):
         """ Removes approach obj """
         del self.approaches[approachId]
+
+if __name__ == "__main__":
+    kg = KeyGenerator.instance()
+    print(kg.approaches)
