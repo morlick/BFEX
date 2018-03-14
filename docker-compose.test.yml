@@ -1,0 +1,66 @@
+version: '2'
+services:
+  elastic:
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.2.1
+    restart: always
+    container_name: elasticsearch
+    environment:
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_UPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata:/usr/share/elastic/data
+    ports:
+      - 9200:9200
+
+  redis:
+    container_name: redis
+    image: redis:4.0.8-alpine
+    volumes:
+      - 'redis:/data'
+    ports:
+      - '6379:6379'
+  
+  bfex:
+    build: ./web
+    restart: always
+    expose:
+      - "8000"
+    command: ["./bin/wait_for_elastic.sh", "elastic", "/opt/conda/envs/BFEX/bin/py.test web/test"]
+    depends_on:
+      - elastic
+      - redis
+    env_file:
+      - .env
+    environment:
+      PYTEST_ENV: "build"
+    
+  celery:
+    build: ./web
+    restart: always
+    volumes:
+      - .:/usr/app
+    depends_on:
+      - redis
+      - elastic
+    command: "/opt/conda/envs/BFEX/bin/celery worker -l debug -A bfex.tasks"
+    env_file:
+      - .env
+  
+  nginx:
+    build: ./nginx
+    restart: always
+    ports:
+      - 80:80
+    depends_on:
+      - bfex
+
+volumes:
+  esdata:
+    driver: local
+  redis:
+    driver: local
