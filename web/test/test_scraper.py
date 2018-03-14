@@ -1,4 +1,5 @@
 import pytest
+import requests
 from bfex.components.scraper.scraper import Scraper
 from bfex.components.scraper.scraper_type import ScraperType
 
@@ -19,3 +20,8 @@ class TestScraper():
         
         scrapps = my_scraper.get_scrapps()
         assert scrapps == []
+
+    def test_create_invalid_url__fail(self):
+        my_scraper = Scraper("http://www.assdfghhded.com", ScraperType.PROFILE)
+        with pytest.raises(requests.exceptions.ConnectionError):
+            my_scraper.get_content()

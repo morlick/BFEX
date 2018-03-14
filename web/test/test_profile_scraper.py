@@ -1,4 +1,5 @@
 import pytest
+import requests
 from bfex.components.scraper.profile_scraper import ProfileScraper
 from bfex.components.scraper.scraper_type import ScraperType
 
@@ -23,3 +24,8 @@ class TestProfileScraper():
         assert scrapps[0].meta_data is not None
         assert scrapps[0].meta_data["orcid_link"] is not None
         assert scrapps[0].meta_data["researchid_link"] is not None
+
+    def test_create_invalid_url__fail(self):
+        my_scraper = ProfileScraper("http://www.assdfghhded.com", ScraperType.PROFILE)
+        with pytest.raises(requests.exceptions.ConnectionError):
+            my_scraper.get_content()
