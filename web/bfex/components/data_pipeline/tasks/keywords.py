@@ -15,7 +15,7 @@ class GetKeywordsFromScrape(Task):
         self.task_name = "Update Keywords From Scrape"
 
     def is_requirement_satisfied(self, faculty):
-         """Verifies that the data is acceptable and has the faculty_id.
+        """Verifies that the data is acceptable and has the faculty_id.
 
         :param faculty: Expected to be a faculty object with an id.
         :returns True if the data is of the form above, else False.
