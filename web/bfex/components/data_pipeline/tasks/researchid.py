@@ -45,9 +45,8 @@ class ResearchIdPageScrape(Task):
                 # Shouldn't happen, but could.
                 raise WorkflowException("Professor id is ambiguous during search ... More than 1 result")
 
-            search_dup = Document.search().query('match', faculty_id=faculty.faculty_id).query("match", source="ResearchId").execute()
-            for doc in search_dup:
-                doc.delete()
+            search_dup = Document.search().query('match', faculty_id=faculty.faculty_id).query("match", source="ResearchId")
+            search_dup.delete()
             faculty = search_results[0]
             if faculty.research_id is not None:
                 
