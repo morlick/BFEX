@@ -18,7 +18,8 @@ services:
       - 9200:9200
 
   redis:
-    image: redis/4.0.8-alpine
+    container_name: redis
+    image: redis:4.0.8-alpine
     volumes:
       - 'redis:/data'
     ports:
@@ -33,13 +34,20 @@ services:
     depends_on:
       - elastic
       - redis
-    environment:
-      ELASTIC_HOST: elastic
+    env_file:
+      - .env
     
   celery:
     build: ./web
     restart: always
-    command: /opt/conda/envs/BFEX/bin/celery worker -l info -A bfex.tasks"
+    volumes:
+      - .:/usr/app
+    depends_on:
+      - redis
+      - elastic
+    command: "/opt/conda/envs/BFEX/bin/celery worker -l debug -A bfex.tasks"
+    env_file:
+      - .env
   
   nginx:
     build: ./nginx
