@@ -7,7 +7,7 @@ import io
 class TextrankApproach(KeyGenerationApproach):
     def __init__(self):
         self.description = """ Generate keyword with Textrank, extract keywords base on finding multi-word phrases containing frequent words, and filter it with stop words """
-        self.approach_id = 3
+        self.approach_id = 2
 
     def generate_keywords(self, text):
         """ Generate keyword with Textrank, extract keywords base on finding multi-word phrases containing frequent words, and filter it with stop words
