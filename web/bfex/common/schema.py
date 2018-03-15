@@ -38,4 +38,4 @@ class KeywordSchema(Schema):
     @post_load
     def _create_faculty(self, data):
         """Turns the extracted json data into an instance of Faculty"""
-        return Keywords(meta={'id': data["faculty_id"], 'datasource': data['datasource'], 'approach_id': data['approach_id']}, **data)
+        return Keywords(meta={}, **data)
