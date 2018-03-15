@@ -1,27 +1,23 @@
 import pytest
 from bfex.models import *
 from bfex.components.data_pipeline.tasks.keywords import *
-
+import elasticsearch_dsl as es
+from test.conftest import is_dev_env
 
 class TestKeywordsTask(object):
 
     def test_requirement_not_satisfied(self):
     
-        name = "name"
-        data =((name))
+        faculty = Faculty()
+        faculty.faculty_id = None
 
-        requirement = UpdateKeywordsFromScrape.is_requirement_satisfied(self,data)
+        requirement = GetKeywordsFromScrape.is_requirement_satisfied(self,faculty)
 
         assert requirement is False
 
     def test_requirement_satisfied(self):
 
-        name = "William.Allison"
-        scrapp = Scrapp()
-        scrapp.set_text = "some text"
-
-        data = [(name,scrapp)]
-        requirement = UpdateKeywordsFromScrape.is_requirement_satisfied(self,data)
-
+        faculty = Faculty()
+        faculty.faculty_id = 1
+        requirement = GetKeywordsFromScrape.is_requirement_satisfied(self,faculty)
         assert requirement is True
-

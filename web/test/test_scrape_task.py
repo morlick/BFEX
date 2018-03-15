@@ -7,11 +7,10 @@ class TestScrapeTasks(object):
     def test_requirement_is_satisfied(self):
 
         name = "William.Allison"
-        data = [name]
 
-        requirement = FacultyPageScrape.is_requirement_satisfied(self,data)
+        requirement = FacultyPageScrape.is_requirement_satisfied(self,name)
 
-        assert requirement is True
+        assert requirement is not None
     
     def test_requirement_is_not_satisfied(self):
 
@@ -20,4 +19,4 @@ class TestScrapeTasks(object):
 
         requirement = FacultyPageScrape.is_requirement_satisfied(self,data)
 
-        assert requirement is False
+        assert requirement is None
