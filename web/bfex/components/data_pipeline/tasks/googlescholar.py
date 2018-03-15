@@ -39,8 +39,9 @@ class GoogleScholarPageScrape(Task):
             # Shouldn't happen, but could.
             raise WorkflowException("Professor id is ambiguous during search ... More than 1 result")
 
-        search_dup = Document.search().query('match', faculty_id=faculty.faculty_id).query("match", source="GoogleScholar")
-        search_dup.delete()
+        Document.search().query('match', faculty_id=faculty.faculty_id) \
+            .query("match", source="GoogleScholar") \
+            .delete()
 
         faculty = search_results[0]
         if faculty.google_scholar is not None and "http" in faculty.google_scholar:

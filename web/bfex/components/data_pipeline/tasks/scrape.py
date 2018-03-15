@@ -1,6 +1,5 @@
 from bfex.components.scraper.scraper_factory import ScraperFactory
 from bfex.components.scraper.scraper_type import ScraperType
-from bfex.components.scraper.scrapp import Scrapp
 from bfex.models import Faculty, Document
 from bfex.common.utils import URLs, FacultyNames
 from bfex.components.data_pipeline.tasks.task import Task
@@ -37,29 +36,13 @@ class FacultyPageScrape(Task):
             faculty_name = data
         else:
             faculty_name = data.name
-
-        search_results = Faculty.search().query('match', name=faculty_name).execute()
-        if len(search_results) > 1:
-            # Shouldn't happen, but could.
-            raise WorkflowException("Professor id is ambiguous during search ... More than 1 result")
-
-        faculty = search_results[0]
-        search_dup = Document.search().query('match', faculty_id=faculty.faculty_id).query("match", source="FacultyPage")
-        search_dup.delete()
             
         faculty_directory_url = URLs.build_faculty_url(faculty_name)
 
         scraper = ScraperFactory.create_scraper(faculty_directory_url, ScraperType.PROFILE)
         scrapp = scraper.get_scrapps()[0]
 
-        doc = Document()
-        doc.source = "FacultyPage"
-        doc.faculty_id = faculty.faculty_id
-        doc.text = scrapp.text
-        doc.save()
-
         tuple = (data,scrapp)
-        print("scrape")
         
         return tuple
 
@@ -68,4 +51,3 @@ if __name__ == "__main__":
     from elasticsearch_dsl import connections
     connections.create_connection()
     Faculty.init()
-    Document.init()
