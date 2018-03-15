@@ -3,10 +3,10 @@ from bfex.components.scraper.scrapp import Scrapp
 from bfex.models import *
 from collections import Counter
 import math
-import nltk
-nltk.download('stopwords')
-from nltk import word_tokenize
-from nltk.corpus import stopwords
+#import nltk
+#nltk.download('stopwords')
+#from nltk import word_tokenize
+#from nltk.corpus import stopwords
 import string
 from bfex.components.data_pipeline.tasks import Task
 
