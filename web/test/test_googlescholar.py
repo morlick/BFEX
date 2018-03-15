@@ -10,17 +10,16 @@ from bfex.common.exceptions import WorkflowException
 from bfex.components.data_pipeline.tasks.task import Task
 from bfex.components.key_generation.rake_approach import *
 from bfex.components.data_pipeline.tasks.googlescholar import *
-from elasticsearch_dsl import connections
-connections.create_connection()
-Faculty.init()
-Document.init()
+
+from test.conftest import is_dev_env
+
 
 class TestGoogleScholar():
     @pytest.mark.skipif(is_dev_env(), reason="Not running in build environment.")
     def test_create__success(self):
         link = 'https://scholar.google.ca/citations?user=KffJRdgAAAAJ&hl=en&oi=sra'
         ga = GoogleScholarPageScrape()
-        obj = Faculty.search().query().execute()[0]
+        obj = Faculty(name="Test.Prof", faculty_id=110, email="test@test.com")
         obj.google_scholar = link
         res = ga.run(obj)
         print(res)

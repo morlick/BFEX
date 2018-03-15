@@ -10,18 +10,15 @@ from bfex.common.exceptions import WorkflowException
 from bfex.components.data_pipeline.tasks.task import Task
 from bfex.components.key_generation.rake_approach import *
 from bfex.components.data_pipeline.tasks.researchid import *
-from elasticsearch_dsl import connections
-connections.create_connection()
-Faculty.init()
-Document.init()
-Keywords.init()
+
+from test.conftest import is_dev_env
 
 class TestReaseachId():
     @pytest.mark.skipif(is_dev_env(), reason="Not running in build environment.")
     def test_create__success(self):
         link = 'http://www.researcherid.com/rid/A-2612-2014'
         rid =ResearchIdPageScrape()
-        obj = Faculty.search().query().execute()[0]
+        obj = Faculty(name="Test.Prof", faculty_id=110, email="test@test.com")
         obj.researcherid = link
         res = rid.run(obj)
         print(res)

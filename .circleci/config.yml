@@ -11,6 +11,9 @@ jobs:
             curl -L https://github.com/docker/compose/releases/download/1.19.0/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
             chmod +x ~/docker-compose
             sudo mv ~/docker-compose /usr/local/bin/docker-compose
+      - run:
+          name: Increase Virtual Memory
+          command: sudo sysctl -w vm.max_map_count=262144
 
       - checkout
 
@@ -28,7 +31,7 @@ jobs:
             docker-compose up -d
 
             # Give time for services to start
-            sleep 20
+            sleep 60
 
       - run:
           name: Run Tests
