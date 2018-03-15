@@ -49,3 +49,8 @@ The development version of redis can be run simply with the `redis-server` comma
 
 #### Mac
 `brew install redis` will provide both `redis-server` and `redis-client`. Run using `redis-server`.
+
+## Tests
+There are 2 forms of tests for BFEX. Those that do not require access to a database, and those that do. By default, the tests that require a connection to elasticsearch are not run. This is to prevent cluttering elasticsearch with test data.
+
+To enable the database tests, you need to set the environment variable `PYTEST_ENV` to `build`. A new connection will be created to the elasticsearch specified by `ELASTIC_HOST`, or default to localhost.
