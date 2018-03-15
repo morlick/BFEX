@@ -89,6 +89,6 @@ if __name__ == "__main__":
             faculty_name = faculty.name
         print(faculty)
 
-        tasks = [FacultyPageScrape, UpdateFacultyFromScrape, GetKeywordsFromScrape, UpdateKeywordsFromGenerator]
+        tasks = [FacultyPageScrape, UpdateFacultyFromScrape, ResearchIdPageScrape, GoogleScholarPageScrape, GetKeywordsFromScrape, UpdateKeywordsFromGenerator]
         workflow_manager = Workflow(tasks, faculty_name)
         workflow_manager.run()

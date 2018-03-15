@@ -46,6 +46,10 @@ class UpdateFacultyFromScrape(Task):
 
         faculty = search_results[0]
 
+        Document.search().query('match', faculty_id=faculty.faculty_id) \
+            .query("match", source="Profile") \
+            .delete()
+
         if "orcid_link" in scrapp.meta_data:
             faculty.orc_id = scrapp.meta_data["orcid_link"]
 

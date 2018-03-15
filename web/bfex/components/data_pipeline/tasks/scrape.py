@@ -1,6 +1,6 @@
 from bfex.components.scraper.scraper_factory import ScraperFactory
 from bfex.components.scraper.scraper_type import ScraperType
-from bfex.models import Faculty
+from bfex.models import Faculty, Document
 from bfex.common.utils import URLs, FacultyNames
 from bfex.components.data_pipeline.tasks.task import Task
 from bfex.components.key_generation.rake_approach import *
@@ -32,8 +32,12 @@ class FacultyPageScrape(Task):
         :param data: str or Faculty instance.
         :return: tuple of the faculty name and Scrapp produced by scraping the faculty directory page.
         """
-
-        faculty_directory_url = URLs.build_faculty_url(data)
+        if isinstance(data, str):
+            faculty_name = data
+        else:
+            faculty_name = data.name
+            
+        faculty_directory_url = URLs.build_faculty_url(faculty_name)
 
         scraper = ScraperFactory.create_scraper(faculty_directory_url, ScraperType.PROFILE)
         scrapp = scraper.get_scrapps()[0]
@@ -44,4 +48,6 @@ class FacultyPageScrape(Task):
 
 
 if __name__ == "__main__":
-    task = FacultyPageScrape()
+    from elasticsearch_dsl import connections
+    connections.create_connection()
+    Faculty.init()
