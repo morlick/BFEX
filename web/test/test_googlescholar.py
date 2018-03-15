@@ -10,10 +10,9 @@ from bfex.common.exceptions import WorkflowException
 from bfex.components.data_pipeline.tasks.task import Task
 from bfex.components.key_generation.rake_approach import *
 from bfex.components.data_pipeline.tasks.googlescholar import *
-from elasticsearch_dsl import connections
-connections.create_connection()
-Faculty.init()
-Document.init()
+
+from test.conftest import is_dev_env
+
 
 class TestGoogleScholar():
     @pytest.mark.skipif(is_dev_env(), reason="Not running in build environment.")

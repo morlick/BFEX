@@ -19,5 +19,5 @@ class TestScrapeTasks(object):
 
         requirement = FacultyPageScrape.is_requirement_satisfied(self,name)
 
-        assert requirement is None
+        assert requirement is False
 

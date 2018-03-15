@@ -123,11 +123,12 @@ def initialize_models():
     """Initializes the mappings of all models in ElasticSearch. Expects that a connection to elastic has already been
     initialized.
     """
-    Faculty.init()
-    Keywords.init()
-    Grant.init()
-    Publication.init()
-    Document.init()
+    models = [Faculty, Keywords, Grant, Publication, Document]
+    for model in models:
+        try:
+            model.init()
+        except:
+            continue
 
 
 # if __name__ == "__main__":
