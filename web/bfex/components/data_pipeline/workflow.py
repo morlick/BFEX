@@ -56,6 +56,9 @@ class Workflow(object):
             result = current_task.run(self.last_result)
             self.last_result = result
             self.current_step += 1
+        else:
+            raise WorkflowException("{} received an unsatisfactory argument - {}"
+                                    .format(current_task.task_name, self.last_result))
         
         return True
 

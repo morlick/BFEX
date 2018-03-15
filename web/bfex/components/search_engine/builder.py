@@ -12,11 +12,11 @@ class QueryBuilder(object):
 
         :param pf_query: Postfix ordered query list,
         :return: Elasticsearch Q object"""
-        # Single term query
         stack = Stack()
 
         if len(pf_query) == 1:
-            stack.push(Q('term', rake_keywords=pf_query[0][1]))
+            # TODO: Pass in the search keyword as an argument
+            stack.push(Q('match', keywords=pf_query[0][1]))
 
         for token in pf_query:
             if token in bool_values:
@@ -28,9 +28,9 @@ class QueryBuilder(object):
             else:
                 q = None
                 if token[0] == 'KEYWORD':
-                    q = Q('term', rake_keywords=token[1])
+                    q = Q('match', keywords=token[1])
                 else:
-                    q = Q('term', rake_keywords=" ".join(token[1]))
+                    q = Q('match', keywords=" ".join(token[1]))
                 stack.push(q)
 
         return stack.pop()

@@ -3,12 +3,12 @@ from collections.abc import Sequence
 from marshmallow.exceptions import ValidationError
 from bfex.common.schema import *
 from bfex.common.exceptions import DataIngestionException
-from bfex.components.data_pipeline.tasks import GetFacultyFromElasticSearch, FacultyPageScrape, UpdateFacultyFromScrape
+from bfex.components.data_pipeline.tasks import FacultyPageScrape, UpdateFacultyFromScrape, ResearchIdPageScrape, GoogleScholarPageScrape, GetKeywordsFromScrape, UpdateKeywordsFromGenerator
 from bfex.tasks import run_workflow
 from bfex.components.data_pipeline.workflow import Workflow
 
 class DataIngester(object):
-    INITIAL_PAGE_SCRAPE = [GetFacultyFromElasticSearch, FacultyPageScrape, UpdateFacultyFromScrape]
+    INITIAL_PAGE_SCRAPE = [FacultyPageScrape, UpdateFacultyFromScrape, ResearchIdPageScrape, GoogleScholarPageScrape, GetKeywordsFromScrape, UpdateKeywordsFromGenerator]
 
     @staticmethod
     def create_faculty(json_data, write=True):
@@ -28,6 +28,9 @@ class DataIngester(object):
         if write:
             faculty.save()
 
+        workflow = Workflow(DataIngester.INITIAL_PAGE_SCRAPE, faculty.name)
+        run_workflow.apply_async((workflow,), countdown=5)
+
     @staticmethod
     def bulk_create_faculty(json_data, write=True):
         """Takes in a list of JSON objects, and loads them into elasticsearch.
@@ -42,9 +45,6 @@ class DataIngester(object):
             count += 1
             DataIngester.create_faculty(faculty_member, write)
 
-        # TODO: This should be running in the create_faculty, once we fix the workflow.
-        workflow = Workflow(DataIngester.INITIAL_PAGE_SCRAPE)
-        run_workflow.apply_async((workflow,), countdown=5)
         print("Ingested {} faculty members".format(count))
 
     @staticmethod

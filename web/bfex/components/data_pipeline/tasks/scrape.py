@@ -32,6 +32,7 @@ class FacultyPageScrape(Task):
         :param data: str or Faculty instance.
         :return: tuple of the faculty name and Scrapp produced by scraping the faculty directory page.
         """
+        print("Running {} on {}".format(self.task_name, data))
         if isinstance(data, str):
             faculty_name = data
         else:
@@ -42,9 +43,9 @@ class FacultyPageScrape(Task):
         scraper = ScraperFactory.create_scraper(faculty_directory_url, ScraperType.PROFILE)
         scrapp = scraper.get_scrapps()[0]
 
-        tuple = (data,scrapp)
+        ret_data = (data,scrapp)
         
-        return tuple
+        return ret_data
 
 
 if __name__ == "__main__":
