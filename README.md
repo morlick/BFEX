@@ -3,6 +3,8 @@
 ## Dev Environment
 To work on BFEX on your local machine, you will need the following dependencies. If you simply wish to run it, you can use docker to deploy the entire system with `docker-compose up --build` from the root directory.
 
+The environmental variable `BFEX_CONFIG` by default points to `${project_dir}/config.json` and can be changed.
+
 ### Conda
 We use conda to manage our virtual python environment and install some more complicated dependencies ie. scipy and numpy. 
 
