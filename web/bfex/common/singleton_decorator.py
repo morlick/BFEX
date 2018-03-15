@@ -1,4 +1,9 @@
+# Stack Overflow
 # https://stackoverflow.com/questions/31875/is-there-a-simple-elegant-way-to-define-singletons
+# Author: Staale & Peter Mortensen
+# https://stackoverflow.com/users/3355/staale
+# https://stackoverflow.com/users/63550/peter-mortensen
+
 class Singleton:
     """
     A non-thread-safe helper class to ease implementing singletons.
