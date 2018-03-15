@@ -8,7 +8,8 @@ from bfex.components.scraper.scrapp import *
 class TestKeyGenerator(object):
     def test_create_success(self):
         type_of_approach = 0
-        my_key_generator = KeyGenerator()
+        my_key_generator = KeyGenerator.instance()
+        print(my_key_generator.approaches)
         scrapp = Scrapp()
         scrapp.text = "The scraper is responsible from gathering useful information from our webpage data sources. It's goal is to extract any useful text, a title, dates and other meta-data (such as easily identifiable key words)from the page. It will then return that as a 'Scrapp'. A scrapp is a container for the results of a single page scraping"
         
