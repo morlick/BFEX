@@ -11,12 +11,14 @@ class TestScrapeTasks(object):
         requirement = FacultyPageScrape.is_requirement_satisfied(self,name)
 
         assert requirement is not None
-    
+
+
     def test_requirement_is_not_satisfied(self):
 
         name = "wrongname"
-        data=[name]
 
-        requirement = FacultyPageScrape.is_requirement_satisfied(self,data)
+
+        requirement = FacultyPageScrape.is_requirement_satisfied(self,name)
 
         assert requirement is None
+

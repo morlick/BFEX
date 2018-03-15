@@ -21,3 +21,5 @@ class TestKeywordsTask(object):
         faculty.faculty_id = 1
         requirement = GetKeywordsFromScrape.is_requirement_satisfied(self,faculty)
         assert requirement is True
+
+    

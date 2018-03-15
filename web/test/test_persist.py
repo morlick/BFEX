@@ -4,6 +4,8 @@ from bfex.components.data_pipeline.tasks.persist import *
 import elasticsearch_dsl as es
 from test.conftest import is_dev_env
 
+
+
 class TestPersistTasks(object):
 
     """Example of how to write a test that will not run on your dev machine."""
@@ -28,9 +30,11 @@ class TestPersistTasks(object):
         scrapp.set_text = "some text"
 
         data = (name,scrapp)
+
         requirement = UpdateFacultyFromScrape.is_requirement_satisfied(self,data)
 
         assert requirement is True
+
 
     def test_update_from_scrape(self):
         faculty_name = "William.Allison"
