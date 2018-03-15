@@ -76,7 +76,8 @@ class TextNormalizer:
 class ConfigFile:
     def __init__(self):
         self.data = []
-        json_file = os.getenv("BFEX_CONFIG", os.cwd())
+        default_path = os.path.normpath(os.path.join(os.path.dirname(__file__),'../../config.json'))
+        json_file = os.getenv("BFEX_CONFIG",default_path)
         with open(json_file) as json_config_file:
             self.data = json.load(json_config_file)
 
