@@ -39,7 +39,7 @@ Installation on Mac is again simplified by brew. Install with `brew install kiba
 
 ### Celery
 Celery is used for distributed asynchronous task processing. It allows us to submit tasks into task queue, where it will processed sometime in the future. This way, we can offload the heavy work like scraping pages from our UI processes. Celery is installed as part of our environment file, but the Celery process must be started seperately. If you have your PYTHONPATH environment variable set up to include `BFEX/web` you can run the following command from anywhere. Otherwise, run it from the `web` folder.
-`celery -A bfex.tasks -l debug` creates the celery process, registers the tasks in bfex.tasks, and sets the logging mode to debug.
+`celery worker -A bfex.tasks -l debug` creates the celery process, registers the tasks in bfex.tasks, and sets the logging mode to debug.
 
 ### Redis
 Redis is an in memory datastore, used as the message broker and result store used by Celery. It serves as an waiting place for tasks that need to be executed.
