@@ -9,7 +9,7 @@ class GetFacultyFromElasticSearch(Task):
     Gets all Faculty Members data from elastic.
     """
     def __init__(self):
-        self.task_name = "Get all Faculty Members"
+        self.task_name = """Get all Faculty Members"""
 
     def is_requirement_satisfied(self, data):
         """ Checks the requirements for a faculty page scraping are satisfied.
