@@ -18,14 +18,8 @@ class GoogleScholarPageScrape(Task):
         :param list data: list of all faculty
         :return: True if valid data, otherwise false
         """
-        satisfied = True
 
-        if (not isinstance(data, tuple) or
-                not isinstance(data[0], str) or
-                not isinstance(data[1], Scrapp)):
-            satisfied = False
-
-        return satisfied
+        return isinstance(data, Faculty)
 
     def run(self, data):
 
@@ -34,31 +28,31 @@ class GoogleScholarPageScrape(Task):
         :return: last faculty member handled
         """
         
-        no_text_count = 0
-        for faculty in data:
+        faculty = data
+        if isinstance(faculty, str):
+            faculty_name = faculty
+        else:
             faculty_name = faculty.name
-    
-            search_results = Faculty.search().query('match', name=faculty_name).execute()
-            if len(search_results) > 1:
-                # Shouldn't happen, but could.
-                raise WorkflowException("Professor id is ambiguous during search ... More than 1 result")
 
-            search_dup = Document.search().query('match', faculty_id=faculty.faculty_id).query("match", source="GoogleScholar")
-            search_dup.delete()
+        search_results = Faculty.search().query('match', name=faculty_name).execute()
+        if len(search_results) > 1:
+            # Shouldn't happen, but could.
+            raise WorkflowException("Professor id is ambiguous during search ... More than 1 result")
 
-            faculty = search_results[0]
-            if faculty.google_scholar is not None and "http" in faculty.google_scholar:
-                scraper = ScraperFactory.create_scraper(faculty.google_scholar, ScraperType.GOOGLESCHOLAR)
-                scrapps = scraper.get_scrapps()
-                for scrapp in scrapps:
-                    doc = Document()
-                    doc.source = "GoogleScholar"
-                    doc.faculty_id = faculty.faculty_id
-                    doc.text = scrapp.title
-                    doc.save()
-            else:
-                no_text_count += 1
-        print("NO TEXT COUNT = ", no_text_count)
+        search_dup = Document.search().query('match', faculty_id=faculty.faculty_id).query("match", source="GoogleScholar")
+        search_dup.delete()
+
+        faculty = search_results[0]
+        if faculty.google_scholar is not None and "http" in faculty.google_scholar:
+            scraper = ScraperFactory.create_scraper(faculty.google_scholar, ScraperType.GOOGLESCHOLAR)
+            scrapps = scraper.get_scrapps()
+            for scrapp in scrapps:
+                doc = Document()
+                doc.source = "GoogleScholar"
+                doc.faculty_id = faculty.faculty_id
+                doc.text = scrapp.title
+                doc.save()
+        
         return faculty
 
 
@@ -67,8 +61,3 @@ if __name__ == "__main__":
     connections.create_connection()
     Faculty.init()
     Document.init()
-
-    search = Faculty.search()
-    allFaculty = [faculty for faculty in search.scan()]
-    task = GoogleScholarPageScrape()
-    task.run(allFaculty)

@@ -70,6 +70,7 @@ class UpdateFacultyFromScrape(Task):
             doc.save()
 
         faculty.save()
+        print("persist")
 
         return faculty
 
