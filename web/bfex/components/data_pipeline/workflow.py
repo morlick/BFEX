@@ -73,6 +73,7 @@ class Workflow(object):
 
 
 if __name__ == "__main__":
+    """Testing Purposes"""
     from bfex.components.data_pipeline.tasks import *
     from elasticsearch_dsl import connections
     connections.create_connection()

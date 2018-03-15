@@ -44,6 +44,11 @@ class Faculty(DocType, Model):
         
 
 class Keywords(DocType,Model):
+    """Definition of the basic Keywords doctype.
+
+    Contains any information related to a keywords instance generated from the keyword generation approaches.
+    Data is saved in the elasticsearch index keywords.
+    """
     faculty_id = Integer(required=True)
     datasource = Text(required=True)
     approach_id = Integer(required=True)
