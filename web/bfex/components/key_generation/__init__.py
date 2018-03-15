@@ -1,3 +1,8 @@
+# Stackoverflow
+# https://stackoverflow.com/questions/3365740/how-to-import-all-submodules
+# Joe Kington
+# https://stackoverflow.com/users/325565/joe-kington
+
 __all__ = []
 
 import pkgutil
