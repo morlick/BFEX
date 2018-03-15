@@ -35,7 +35,7 @@ class TestPersistTasks(object):
 
         assert requirement is True
 
-
+    @pytest.mark.skipif(is_dev_env(), reason="Not running in build environment.")    
     def test_update_from_scrape(self):
         faculty_name = "William.Allison"
         scrapp = Scrapp()

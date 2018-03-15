@@ -16,6 +16,7 @@ Faculty.init()
 Document.init()
 
 class TestGoogleScholar():
+    @pytest.mark.skipif(is_dev_env(), reason="Not running in build environment.")
     def test_create__success(self):
         link = 'https://scholar.google.ca/citations?user=KffJRdgAAAAJ&hl=en&oi=sra'
         ga = GoogleScholarPageScrape()

@@ -17,6 +17,7 @@ Document.init()
 Keywords.init()
 
 class TestReaseachId():
+    @pytest.mark.skipif(is_dev_env(), reason="Not running in build environment.")
     def test_create__success(self):
         link = 'http://www.researcherid.com/rid/A-2612-2014'
         rid =ResearchIdPageScrape()
