@@ -11,4 +11,7 @@ class TestFaculty(object):
         prof.department = "cs"
 
         assert prof.department == "cs"
+        assert prof.name == "name"
+        assert prof.email == "email@ualberta.ca"
+        assert prof.faculty_id == 1
 
