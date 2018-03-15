@@ -30,20 +30,17 @@ class GoogleScholarPageScrape(Task):
         
         faculty = data
         if isinstance(faculty, str):
-            faculty_name = faculty
-        else:
-            faculty_name = faculty.name
-
-        search_results = Faculty.search().query('match', name=faculty_name).execute()
-        if len(search_results) > 1:
-            # Shouldn't happen, but could.
-            raise WorkflowException("Professor id is ambiguous during search ... More than 1 result")
+            search_results = Faculty.search().query('match', name=faculty_name).execute()
+            if len(search_results) > 1:
+                # Shouldn't happen, but could.
+                raise WorkflowException("Professor id is ambiguous during search ... More than 1 result")
+            faculty = search_results[0]
+        faculty_name = faculty.name
 
         Document.search().query('match', faculty_id=faculty.faculty_id) \
             .query("match", source="GoogleScholar") \
             .delete()
 
-        faculty = search_results[0]
         if faculty.google_scholar is not None and "http" in faculty.google_scholar:
             scraper = ScraperFactory.create_scraper(faculty.google_scholar, ScraperType.GOOGLESCHOLAR)
             scrapps = scraper.get_scrapps()

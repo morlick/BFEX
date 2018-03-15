@@ -30,20 +30,22 @@ class ResearchIdPageScrape(Task):
         
         faculty = data
         if isinstance(faculty, str):
-            faculty_name = faculty
-        else:
-            faculty_name = faculty.name
+            search_results = Faculty.search().query('match', name=faculty).execute()
+            if len(search_results) > 1:
+                # Shouldn't happen, but could.
+                raise WorkflowException("Professor id is ambiguous during search ... More than 1 result")
+            faculty = search_results[0]
+            
+        faculty_name = faculty.name
 
-        search_results = Faculty.search().query('match', name=faculty_name).execute()
-        if len(search_results) > 1:
-            # Shouldn't happen, but could.
-            raise WorkflowException("Professor id is ambiguous during search ... More than 1 result")
-
+        
         Document.search().query('match', faculty_id=faculty.faculty_id) \
             .query("match", source="ResearchId") \
             .delete()
 
-        faculty = search_results[0]
+        print("Running researchid scrape on {}. Research id {}."
+                .format(faculty_name, faculty.research_id))
+
         if faculty.research_id is not None:
             
             scraper = ScraperFactory.create_scraper(faculty.research_id, ScraperType.RESEARCHID)
