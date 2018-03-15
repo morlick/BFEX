@@ -18,7 +18,7 @@ class TestReaseachId():
     def test_create__success(self):
         link = 'http://www.researcherid.com/rid/A-2612-2014'
         rid =ResearchIdPageScrape()
-        obj = Faculty.search().query().execute()[0]
+        obj = Faculty(name="Test.Prof", faculty_id=110, email="test@test.com")
         obj.researcherid = link
         res = rid.run(obj)
         print(res)

@@ -3,7 +3,7 @@ from bfex.models import *
 from bfex.components.data_pipeline.tasks.persist import *
 import elasticsearch_dsl as es
 from test.conftest import is_dev_env
-
+from time import sleep
 
 
 class TestPersistTasks(object):
@@ -37,11 +37,13 @@ class TestPersistTasks(object):
 
     @pytest.mark.skipif(is_dev_env(), reason="Not running in build environment.")    
     def test_update_from_scrape(self):
-        faculty_name = "William.Allison"
+        faculty = Faculty(name="William.Allison", faculty_id=379, email="william.allison@ualberta.ca")
+        faculty.save()
         scrapp = Scrapp()
-        scrapp.add_meta = ["http://orcid.org/0000-0002-8461-4864","orcid_link"]
+        scrapp.add_meta = ["orcid_link","http://orcid.org/0000-0002-8461-4864"]
         scrapp.add_meta = ["researchid_link","http://www.researcherid.com/rid/A-2612-2014"]
-        data = (faculty_name,scrapp)
+        sleep(3)
+        data = (faculty.name,scrapp)
         task = UpdateFacultyFromScrape()
         res = task.run(data)
 

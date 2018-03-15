@@ -19,7 +19,7 @@ class TestGoogleScholar():
     def test_create__success(self):
         link = 'https://scholar.google.ca/citations?user=KffJRdgAAAAJ&hl=en&oi=sra'
         ga = GoogleScholarPageScrape()
-        obj = Faculty.search().query().execute()[0]
+        obj = Faculty(name="Test.Prof", faculty_id=110, email="test@test.com")
         obj.google_scholar = link
         res = ga.run(obj)
         print(res)
