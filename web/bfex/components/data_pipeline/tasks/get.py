@@ -13,12 +13,11 @@ class GetFacultyFromElasticSearch(Task):
 
     def is_requirement_satisfied(self, data):
         """ Checks the requirements for a faculty page scraping are satisfied.
+        However, no check is required since this is the start of the workflow.
 
-        :param list data: list of all faculty
-        :return: True if data is null. Data should be null as we pass 
-        nothing into it to run the code
+        :param data: None
+        :return: True
         """
-        #bad code, TODO: remove @garry
         return True
 
     def run(self, data):

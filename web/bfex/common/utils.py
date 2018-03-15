@@ -6,9 +6,10 @@ import os
 import json
 
 def generate_names_from_json(item):
+    """This regex reformats names from  'First.Last' to last-first"""
     name_from_json = item['name']
-    name_from_json = re.sub('[.]', '', name_from_json)
-    name_list = re.findall('[A-Z][^A-Z]*', name_from_json)
+    name_from_json = re.sub('[.]', '', name_from_json)  # Matches periods
+    name_list = re.findall('[A-Z][^A-Z]*', name_from_json) # Matches all Camelcase words
     formated_name = "-".join(name_list).lower()
     return formated_name
 
@@ -27,8 +28,8 @@ class URLs:
 
 class FacultyNames:
     """Utilities for working with Faculty names."""
-    name_regex = re.compile(r'\w+\.\w+')
-    split_regex = re.compile(r'(?!^)([A-Z][a-z]+)')
+    name_regex = re.compile(r'\w+\.\w+')    # Matches First.Last
+    split_regex = re.compile(r'(?!^)([A-Z][a-z]+)') # Matches url safe characters
 
     @staticmethod
     def validate_name(name):
@@ -74,6 +75,7 @@ class TextNormalizer:
         return normalized
 
 class ConfigFile:
+    """Fetches BFEX's config file"""
     def __init__(self):
         self.data = []
         default_path = os.path.normpath(os.path.join(os.path.dirname(__file__),'../../config.json'))
@@ -83,4 +85,5 @@ class ConfigFile:
 
 
 if __name__ == "__main__":
+    """Testing purposes"""
     print(FacultyNames.build_url_name("JNelson.Amaral"))
