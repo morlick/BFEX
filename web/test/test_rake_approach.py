@@ -14,3 +14,28 @@ class TestRakeApproach(object):
 
         my_type = my_generic_approach.get_id()
         assert my_type is not None
+
+    def test_create_fail(self):
+        with pytest.raises(TypeError):
+            my_generic_approach = RakeApproach()
+            scrapp = Scrapp()
+            scrapp.text = None
+            
+            result = my_generic_approach.generate_keywords(scrapp.text)
+            assert result is None     
+
+            my_type = my_generic_approach.get_id()
+            assert my_type is not None
+
+
+    def test_empty_text(self):
+        my_generic_approach = RakeApproach()
+        scrapp = Scrapp()
+        scrapp.text = " "
+
+        result = my_generic_approach.generate_keywords(scrapp.text)
+
+        assert result is not None
+
+        my_type = my_generic_approach.get_id()
+        assert my_type is not None
