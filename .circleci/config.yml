@@ -1,8 +1,8 @@
 version: 2
 jobs:
   build:
-    docker:
-      - image: continuumio/miniconda
+    machine:
+      image: circleci/classic:latest
 
     steps:
       - run:
@@ -12,36 +12,35 @@ jobs:
             chmod +x ~/docker-compose
             sudo mv ~/docker-compose /usr/local/bin/docker-compose
 
-      - setup_remote_docker
-
       - checkout
 
       - run:
           name: Build Docker Containers
           command: docker-compose build
 
+      - run:
+          name: Remove Current Containers
+          command: docker-compose down
+
       - run: 
           name: Run Docker Containers
-          command: docker-compose up -d -f docker-compose.yml
+          command: |
+            docker-compose up -d
+
+            # Give time for services to start
+            sleep 20
 
       - run:
-          name: Run tests on container
-          command: sudo lxc-attach -n "$(docker inspect --format "{{.Id}}" bfex_bfex_1)" -- bash -c "cd /usr/app && /opt/conda/envs/BFEX/bin/py.test web/test"
-      
-      # - run:
-      #     name: Setup Python Env for tests
-      #     command: |
-      #       set -x
-      #       conda-env create -f ./web/environment.yml
+          name: Run Tests
+          command: |
+            DOCKERID=$(docker ps -aqf "name=project_bfex_1")
+            docker exec $DOCKERID /opt/conda/envs/BFEX/bin/py.test test
 
-      # - run:
-      #     name: Run tests
-      #     command: |
-      #       set -e
-      #       source activate BFEX
-      #       pytest ./web
-
-      - add_ssh_keys
+      - run:
+          name: Shutdown Docker Containers
+          command: |
+            docker-compose down
+      # - add_ssh_keys
 
       # - run:
       #     name: Add Known Hosts
