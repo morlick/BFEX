@@ -9,17 +9,16 @@ class GetFacultyFromElasticSearch(Task):
     Gets all Faculty Members data from elastic.
     """
     def __init__(self):
-        self.task_name = "Get all Faculty Members"
+        self.task_name = """Get all Faculty Members"""
 
     def is_requirement_satisfied(self, data):
         """ Checks the requirements for a faculty page scraping are satisfied.
+        However, no check is required since this is the start of the workflow.
 
-        :param list data: list of all faculty
-        :return: True if data is null. Data should be null as we pass 
-        nothing into it to run the code
+        :param data: None
+        :return: True
         """
-
-        return data == None
+        return True
 
     def run(self, data):
         """ Searches through all results in elastic search

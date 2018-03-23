@@ -21,11 +21,10 @@ class UpdateFacultyFromScrape(Task):
         """
         satisfied = True
         
-        for faculty in data:
-            if (not isinstance(faculty, tuple) or
-                    not isinstance(faculty[0], str) or
-                    not isinstance(faculty[1], Scrapp)):
-                satisfied = False
+        if (not isinstance(data, tuple) or
+                not isinstance(data[0], str) or
+                not isinstance(data[1], Scrapp)):
+            satisfied = False
 
         return satisfied
 
@@ -35,42 +34,46 @@ class UpdateFacultyFromScrape(Task):
         :param data: list of tuples of form <str, Scrapp>
         :return: The updated instance of a Faculty model.
         """
-        for faculty in data:
-            faculty_name = faculty[0]
-            scrapp = faculty[1]
+
+        faculty_name = data[0]
+        scrapp = data[1]
 
 
-            search_results = Faculty.search().query('match', name=faculty_name).execute()
-            if len(search_results) > 1:
-                # Shouldn't happen, but could.
-                raise WorkflowException("Faculty name is ambiguous during search... More than 1 result")
+        search_results = Faculty.search().query('match', name=faculty_name).execute()
+        if len(search_results) > 1:
+            # Shouldn't happen, but could.
+            raise WorkflowException("Faculty name is ambiguous during search... More than 1 result")
 
-            faculty = search_results[0]
+        faculty = search_results[0]
 
-            if "orcid_link" in scrapp.meta_data:
-                faculty.orc_id = scrapp.meta_data["orcid_link"]
+        Document.search().query('match', faculty_id=faculty.faculty_id) \
+            .query("match", source="Profile") \
+            .delete()
 
-            if "researchid_link" in scrapp.meta_data:
-                faculty.research_id = scrapp.meta_data["researchid_link"]
+        if "orcid_link" in scrapp.meta_data:
+            faculty.orc_id = scrapp.meta_data["orcid_link"]
 
-            if "googlescholar_link" in scrapp.meta_data:
-                faculty.google_scholar = scrapp.meta_data["googlescholar_link"]
+        if "researchid_link" in scrapp.meta_data:
+            faculty.research_id = scrapp.meta_data["researchid_link"]
 
-            if "text" in scrapp.meta_data:
-                doc_search = Document.search().query('match', faculty_id=faculty.faculty_id) \
-                    .query('match', source = "profile") \
-                    .execute()
-                try:
-                    doc = doc_search[0]
-                except IndexError:
-                    doc = Document()
-                    doc.faculty_id = faculty.faculty_id
-                    doc.source = "profile"
+        if "googlescholar_link" in scrapp.meta_data:
+            faculty.google_scholar = scrapp.meta_data["googlescholar_link"]
 
-                doc.text = scrapp.meta_data["text"]
-                doc.save()
+        if "text" in scrapp.meta_data:
+            doc_search = Document.search().query('match', faculty_id=faculty.faculty_id) \
+                .query('match', source = "profile") \
+                .execute()
+            try:
+                doc = doc_search[0]
+            except IndexError:
+                doc = Document()
+                doc.faculty_id = faculty.faculty_id
+                doc.source = "profile"
 
-            faculty.save()
+            doc.text = scrapp.meta_data["text"]
+            doc.save()
+
+        faculty.save()
 
         return faculty
 

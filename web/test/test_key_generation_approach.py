@@ -4,6 +4,7 @@ from bfex.components.key_generation.key_generation_approach import *
 from bfex.components.scraper.scrapp import *
 
 class TestKeyGenerationApproach(object):
+    """Tests the keygen interface methods and enforces no changes to the interface design"""
     def test_create_success(self):
         type_of_approach = 1
         my_generic_approach = KeyGenerationApproach(type_of_approach, 'key-generic')

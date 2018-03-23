@@ -1,32 +1,55 @@
 version: 2
 jobs:
   build:
-    docker:
-      - image: continuumio/miniconda
+    machine:
+      image: circleci/classic:latest
 
     steps:
+      - run:
+          name: Install docker-compose
+          command: |
+            curl -L https://github.com/docker/compose/releases/download/1.19.0/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
+            chmod +x ~/docker-compose
+            sudo mv ~/docker-compose /usr/local/bin/docker-compose
+      - run:
+          name: Increase Virtual Memory
+          command: sudo sysctl -w vm.max_map_count=262144
+
       - checkout
 
       - run:
-          name: Setup Python Env for tests
-          command: |
-            set -x
-            conda-env create -f ./web/environment.yml
+          name: Build Docker Containers
+          command: docker-compose build
 
       - run:
-          name: Run tests
-          command: |
-            set -e
-            source activate BFEX
-            pytest ./web
+          name: Remove Current Containers
+          command: docker-compose down
 
-      - add_ssh_keys
+      - run: 
+          name: Run Docker Containers
+          command: |
+            docker-compose up -d
+
+            # Give time for services to start
+            sleep 60
 
       - run:
-          name: Add Known Hosts
+          name: Run Tests
           command: |
-            set -x
-            ssh-keyscan ${DEPLOY_IP} > ~/.ssh/known_hosts
+            DOCKERID=$(docker ps -aqf "name=project_bfex_1")
+            docker exec $DOCKERID /opt/conda/envs/BFEX/bin/py.test test
+
+      - run:
+          name: Shutdown Docker Containers
+          command: |
+            docker-compose down
+      # - add_ssh_keys
+
+      # - run:
+      #     name: Add Known Hosts
+      #     command: |
+      #       set -x
+      #       ssh-keyscan ${DEPLOY_IP} > ~/.ssh/known_hosts
 
       # - run:
       #     name: Deploy

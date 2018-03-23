@@ -4,6 +4,7 @@ from bfex.models import *
 from bfex.common.exceptions import WorkflowException
 from bfex.components.key_generation.rake_approach import *
 from bfex.components.key_generation.generic_approach import *
+from bfex.components.key_generation.textrank_approach import *
 from bfex.components.key_generation.key_generator import KeyGenerator
 import time
 
@@ -40,12 +41,7 @@ class GetKeywordsFromScrape(Task):
         search_results = Document.search().query('match', faculty_id=faculty_id).execute()
         for document in search_results:
             #Approaches will be registered somewhere else                  
-            key_generator  = KeyGenerator()
-            my_generic_approach = GenericApproach()
-            my_rake_approach = RakeApproach()
-
-            key_generator.register_approach(my_generic_approach, 0)
-            key_generator.register_approach(my_rake_approach, 1)
+            key_generator  = KeyGenerator.instance()
 
             keys = key_generator.generate_keywords(document.text)
 

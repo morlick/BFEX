@@ -5,3 +5,5 @@ from bfex.components.data_pipeline.tasks.get import *
 from bfex.components.data_pipeline.tasks.researchid import *
 from bfex.components.data_pipeline.tasks.googlescholar import *
 from bfex.components.data_pipeline.tasks.keywords import *
+from bfex.components.data_pipeline.tasks.googlescholar import *
+from bfex.components.data_pipeline.tasks.researchid import *

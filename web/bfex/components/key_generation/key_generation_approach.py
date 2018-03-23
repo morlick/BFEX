@@ -1,10 +1,9 @@
 from abc import ABC
 import json
-from bfex.components.key_generation.key_generator import *
 
 
 class KeyGenerationApproach(ABC):
-    """" Key Generation Approach interface"""
+    """"Key Generation Approach Interface for subclasses to inherit from"""
     def __init__(self, approach_id, description):
         """
         :approach_id The assigned id for the algorithm

@@ -44,6 +44,11 @@ class Faculty(DocType, Model):
         
 
 class Keywords(DocType,Model):
+    """Definition of the basic Keywords doctype.
+
+    Contains any information related to a keywords instance generated from the keyword generation approaches.
+    Data is saved in the elasticsearch index keywords.
+    """
     faculty_id = Integer(required=True)
     datasource = Text(required=True)
     approach_id = Integer(required=True)
@@ -118,11 +123,12 @@ def initialize_models():
     """Initializes the mappings of all models in ElasticSearch. Expects that a connection to elastic has already been
     initialized.
     """
-    Faculty.init()
-    Keywords.init()
-    Grant.init()
-    Publication.init()
-    Document.init()
+    models = [Faculty, Keywords, Grant, Publication, Document]
+    for model in models:
+        try:
+            model.init()
+        except:
+            continue
 
 
 # if __name__ == "__main__":

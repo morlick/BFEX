@@ -2,7 +2,7 @@ from flask import Blueprint, abort, render_template, make_response, request
 from flask_restful import Resource, Api
 
 from bfex.components.search_engine import parser, builder
-from bfex.models import Faculty
+from bfex.models import Faculty, Keywords
 from bfex.common.schema import FacultySchema
 
 # Setup the blueprint and add to the api.
@@ -26,9 +26,13 @@ class SearchAPI(Resource):
         pf_query = q_parser.parse_query(query)
         elastic_query = q_builder.build(pf_query)
 
-        response = Faculty.search().query(elastic_query).execute()
+        # response = Faculty.search().query(elastic_query).execute()
+        response = Keywords.search().query(elastic_query).execute()
+        faculty_with_keywords = set()
+        for keywords in response:
+            faculty_with_keywords.add(keywords.faculty_id)
         schema = FacultySchema()
-        results = [schema.dump(faculty) for faculty in response]
+        results = [schema.dump(Faculty.safe_get(faculty_id)) for faculty_id in faculty_with_keywords]
 
         return {
             "data": results

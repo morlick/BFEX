@@ -22,8 +22,9 @@ class Workflow(object):
         self.current_step = 0
         self.last_result = init_data
 
-        # TODO: It would be cool to support dynamic loading of classes at runtime. So we could specify a workflow
+        """TODO: It would be cool to support dynamic loading of classes at runtime. So we could specify a workflow
         # as a list of string names of the tasks. You could define new workflows from an api that way.
+        """
         if self.steps < 1:
             raise ValueError("A workflow must contain at least one step.")
 
@@ -46,17 +47,19 @@ class Workflow(object):
         :returns False if there are no more steps to be run, True if the step succeeds.
         """
         if self.current_step >= self.steps:
-            return False                        # ? This doesn't seem like a great approach to tell the workflow to stop
+            return False
 
-        current_task = self.get_current_task()()    # Fetch the class of the next task, and instantiate it
+        """Fetch the class of the next task, and instantiate it"""
+        current_task = self.get_current_task()()    
         
         if current_task.is_requirement_satisfied(self.last_result):
             result = current_task.run(self.last_result)
             self.last_result = result
             self.current_step += 1
-        #else:
-            #raise WorkflowTaskArgumentException("{} received an unsatisfactory argument - {}")
-
+        else:
+            raise WorkflowException("{} received an unsatisfactory argument - {}"
+                                    .format(current_task.task_name, self.last_result))
+        
         return True
 
     def run(self):
@@ -73,6 +76,7 @@ class Workflow(object):
 
 
 if __name__ == "__main__":
+    """Testing Purposes"""
     from bfex.components.data_pipeline.tasks import *
     from elasticsearch_dsl import connections
     connections.create_connection()
@@ -82,5 +86,16 @@ if __name__ == "__main__":
     tasks = [GetFacultyFromElasticSearch, FacultyPageScrape, GoogleScholarPageScrape, ResearchIdPageScrape, UpdateFacultyFromScrape, GetKeywordsFromScrape, UpdateKeywordsFromGenerator]
 
 
-    workflow_manager = Workflow(tasks)
-    workflow_manager.run()
+    search = Faculty.search()
+    allFaculty = [faculty for faculty in search.scan()]
+    for faculty in allFaculty:
+
+        if isinstance(faculty, str):
+            faculty_name = faculty
+        else:
+            faculty_name = faculty.name
+        print(faculty)
+
+        tasks = [FacultyPageScrape, UpdateFacultyFromScrape, ResearchIdPageScrape, GoogleScholarPageScrape, GetKeywordsFromScrape, UpdateKeywordsFromGenerator]
+        workflow_manager = Workflow(tasks, faculty_name)
+        workflow_manager.run()
