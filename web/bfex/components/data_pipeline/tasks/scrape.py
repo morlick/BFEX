@@ -2,6 +2,7 @@ from bfex.components.scraper.scraper_factory import ScraperFactory
 from bfex.components.scraper.scraper_type import ScraperType
 from bfex.models import Faculty, Document
 from bfex.common.utils import URLs, FacultyNames
+from bfex.common.exceptions import ScraperException
 from bfex.components.data_pipeline.tasks.task import Task
 from bfex.components.key_generation.rake_approach import *
 
@@ -41,9 +42,12 @@ class FacultyPageScrape(Task):
         faculty_directory_url = URLs.build_faculty_url(faculty_name)
 
         scraper = ScraperFactory.create_scraper(faculty_directory_url, ScraperType.PROFILE)
-        scrapp = scraper.get_scrapps()[0]
+        try:
+            scrapp = scraper.get_scrapps()[0]
+        except ScraperException:
+            return None
 
-        ret_data = (data,scrapp)
+        ret_data = (data, scrapp)
         
         return ret_data
 
