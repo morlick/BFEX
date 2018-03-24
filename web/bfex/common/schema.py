@@ -46,3 +46,12 @@ class GrantSchema(Schema):
     title = fields.String(missing="", required=True)
     text = fields.String(load_from="summary", required=True)
     source = fields.String(missing="nserc")
+
+class DocumentSchema(Schema):
+    faculty_id = fields.String(required=True)
+    source = fields.String(required=True)
+
+    title = fields.String()
+    text = fields.String()
+    date = fields.Date()
+    keyords = fields.String()
