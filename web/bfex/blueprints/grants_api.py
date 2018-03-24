@@ -4,36 +4,43 @@ from io import StringIO
 from flask import Blueprint, abort, render_template, make_response, request
 from flask_restful import Resource, Api
 
-from bfex.components.data_ingestor import DataIngester
+from bfex.components.data_ingestor import DataIngester, DataIngestionException
 
 # Setup the blueprint and add to the api.
 grants_bp = Blueprint("grants", __name__)
 api = Api(grants_bp)
 
-NSERC_GRANT = "nserc_grants"
+MB = 1024 * 1024
 
-# Define default locations of information for incoming CSV
-NAME_COLUMN = 0
-UNIVERSITY_COLUMN = 1
-TITLE_COLUMN = 2
-BODY_COLUMN = 3
 
 class GrantsAPI(Resource):
     """Contains methods for performing search over keywords."""
 
     def post(self):
-        """HTTP Get that enables boolean query processing and search."""
-        print(request.files)
-        
-        if NSERC_GRANT not in request.files:
-            abort(400)
-        
-        nserc_file = request.files[NSERC_GRANT]
-        # TODO: Pass file encoding in with request.
-        stream = StringIO(nserc_file.read().decode("utf-8"))    # File is currently expected to be UTF-8 encoded.
-        reader = csv.reader(stream)
+        """HTTP Post for the grants resource.
 
-        DataIngester.bulk_create_grants(reader)
+        Ingests a lists of faculty members, and saves the information into elasticsearch. Currently does not do any
+        checks if there already exists a faculty member with the same id that will be overridden.
+        TODO: Decide if this should check for existing faculty and return which faculty were not inserted, and add PUT.
+
+        :return:HTTP 400 if the request is not JSON.
+                HTTP 413 if the given JSON is more than 16MB in size or there was an error ingesting the given data.
+                HTTP 200 if the ingestion succeeded.
+        """
+        if not request.is_json:
+            abort(400)
+
+        # Data larger than 16MB should be broken up.
+        # if request.content_length > 16*MB:
+        #     abort(413)
+
+        json_data = request.get_json()
+
+        try:
+            DataIngester.bulk_create_grants(json_data["data"])
+        except DataIngestionException as e:
+            print(e)
+            abort(413)
 
         return 200
         

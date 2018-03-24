@@ -11,6 +11,7 @@ class FacultySchema(Schema):
     """
     faculty_id = fields.Integer(load_from="id", required=True)
     name = fields.String(required=True)
+    full_name = fields.String(load_from="fullName", required=True)
     email = fields.Email(required=True)
     department = fields.String(allow_none=True, missing="Unknown")
 
@@ -39,3 +40,9 @@ class KeywordSchema(Schema):
     def _create_faculty(self, data):
         """Turns the extracted json data into an instance of Faculty"""
         return Keywords(meta={}, **data)
+
+class GrantSchema(Schema):
+    faculty_name = fields.String(load_from="faculty_name", required=True)
+    title = fields.String(missing="", required=True)
+    text = fields.String(load_from="summary", required=True)
+    source = fields.String(missing="nserc")
