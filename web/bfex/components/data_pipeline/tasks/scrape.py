@@ -42,10 +42,7 @@ class FacultyPageScrape(Task):
         faculty_directory_url = URLs.build_faculty_url(faculty_name)
 
         scraper = ScraperFactory.create_scraper(faculty_directory_url, ScraperType.PROFILE)
-        try:
-            scrapp = scraper.get_scrapps()[0]
-        except ScraperException:
-            return None
+        scrapp = scraper.get_scrapps()[0]
 
         ret_data = (data, scrapp)
         

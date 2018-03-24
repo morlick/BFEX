@@ -1,6 +1,5 @@
 from bfex.components.data_pipeline.tasks import Task
-from bfex.common.exceptions import WorkflowTaskArgumentException
-
+from bfex.common.exceptions import WorkflowTaskArgumentException, ScraperException, WorkflowException 
 
 class Workflow(object):
     """A workflow is a series of tasks to be run in sequence.
@@ -53,7 +52,11 @@ class Workflow(object):
         current_task = self.get_current_task()()    
         
         if current_task.is_requirement_satisfied(self.last_result):
-            result = current_task.run(self.last_result)
+            try:
+                result = current_task.run(self.last_result)
+            except ScraperException:
+                return False
+
             self.last_result = result
             self.current_step += 1
         else:
