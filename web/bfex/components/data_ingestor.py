@@ -48,12 +48,19 @@ class DataIngester(object):
         print("Ingested {} faculty members".format(count))
 
     @staticmethod
-    def create_grant(json_data, write=True):
+    def create_grant(csv_row, write=True):
         pass
 
     @staticmethod
-    def bulk_create_grants(json_data, write=True):
-        pass
+    def bulk_create_grants(csv_reader, write=True):
+        count = 0
+        try:
+            for row in csv_reader:
+                DataIngester.create_grant(row)
+                count += 1
+        except TypeError as e:
+            raise TypeError("Expected an iterable producing lists.", e)
+
 
     @staticmethod
     def create_publication(json_data, write=True):
