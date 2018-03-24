@@ -37,7 +37,7 @@ class TestPersistTasks(object):
 
     @pytest.mark.skipif(is_dev_env(), reason="Not running in build environment.")    
     def test_update_from_scrape(self):
-        faculty = Faculty(name="William.Allison", faculty_id=379, email="william.allison@ualberta.ca")
+        faculty = Faculty(name="William.Allison", full_name="Allison, William.", faculty_id=379, email="william.allison@ualberta.ca")
         faculty.save()
         scrapp = Scrapp()
         scrapp.add_meta = ["orcid_link","http://orcid.org/0000-0002-8461-4864"]
