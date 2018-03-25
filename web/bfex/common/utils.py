@@ -44,6 +44,7 @@ class FacultyNames:
         name_list = FacultyNames.split_regex.sub(r' \1', name).replace(r'.', r'').split()
 
         url_safe = '-'.join(name_list)
+        url_safe = url_safe.replace("--", "-")
 
         return url_safe.lower()
 
