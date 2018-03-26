@@ -44,8 +44,11 @@ class FacultyNames:
         name_list = FacultyNames.split_regex.sub(r' \1', name).replace(r'.', r'').split()
 
         url_safe = '-'.join(name_list)
+        url_safe = url_safe.lower()
+        url_safe = url_safe.replace("--", "-")
+        url_safe = url_safe.replace("-mc-", "-mc")
 
-        return url_safe.lower()
+        return url_safe
 
 
 class TextNormalizer:
