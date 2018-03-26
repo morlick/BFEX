@@ -3,6 +3,22 @@ from marshmallow import Schema, fields, post_load
 from bfex.models import *
 
 
+class KeywordSchema(Schema):
+    """Marshmallow schema used for validating Faculty JSON objects.
+    A marshmallow schema allows us to easily extract information from JSON input, while at the same time, performing
+    basic validation of that data.
+    """
+    faculty_id = fields.Integer(load_from="id", required=True)
+    datasource = fields.String()
+    approach_id = fields.Integer()
+    keywords = fields.List(fields.String)
+
+    @post_load
+    def _create_faculty(self, data):
+        """Turns the extracted json data into an instance of Faculty"""
+        return Keywords(meta={}, **data)
+
+
 class FacultySchema(Schema):
     """Marshmallow schema used for validating Faculty JSON objects.
 
@@ -20,26 +36,15 @@ class FacultySchema(Schema):
     sciverse_id = fields.String(load_from="sciverseId")
     research_id = fields.String(load_from="researchId")
 
+    generated_keywords = fields.Nested(KeywordSchema, exclude=('faculty_id',), many=True)
+
     @post_load
     def _create_faculty(self, data):
         """Turns the extracted json data into an instance of Faculty"""
         return Faculty(meta={'id': data["faculty_id"]}, **data)
 
-
-class KeywordSchema(Schema):
-    """Marshmallow schema used for validating Faculty JSON objects.
-    A marshmallow schema allows us to easily extract information from JSON input, while at the same time, performing
-    basic validation of that data.
-    """
-    faculty_id = fields.Integer(load_from="id", required=True)
-    datasource = fields.String()
-    approach_id = fields.Integer()
-    keywords = fields.String()
-
-    @post_load
-    def _create_faculty(self, data):
-        """Turns the extracted json data into an instance of Faculty"""
-        return Keywords(meta={}, **data)
+    class Meta:
+        ordered = True
 
 
 class GrantSchema(Schema):
@@ -56,4 +61,4 @@ class DocumentSchema(Schema):
     title = fields.String()
     text = fields.String()
     date = fields.Date()
-    keyords = fields.String()
+    keywords = fields.String()
