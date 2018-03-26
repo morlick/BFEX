@@ -5,6 +5,7 @@ from bfex.models import Faculty
 from bfex.components.data_ingestor import DataIngester
 from bfex.common.exceptions import DataIngestionException
 from bfex.common.schema import FacultySchema
+from bfex.blueprints.api_utils import paginate_query
 
 MB = 1024 * 1024
 
@@ -44,35 +45,15 @@ class FacultyListAPI(Resource):
         :param results: URL Parameter for the number of results to return per page. Default - 20.
         :return:
         """
-        page = request.args.get("page", default=0, type=int)
-        results = request.args.get("results", default=20, type=int)
-
-        # Get the slice of data to retrieve
-        first = page * results
-        last = (page * results) + results
-
         search = Faculty.search()
-        count = search.count()
-        query = search[first:last]
+        query, pagination_info = paginate_query(request, search)
         response = query.execute()
 
         schema = FacultySchema()
         results = [schema.dump(faculty) for faculty in response]
 
-        has_previous = True if page > 0 else False
-        has_next = True if last < count else False
-        previous = page - 1 if has_previous else None
-        next = page + 1 if has_next else None
-
         return {
-            "pagination": {
-                "has_previous": has_previous,
-                "has_next": has_next,
-                "previous_page": previous,
-                "current_page": page,
-                "next_page": next,
-            },
-
+            "pagination": pagination_info,
             "data": results
         }
 

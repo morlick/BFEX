@@ -3,42 +3,13 @@ from flask_restful import Resource, Api
 
 from bfex.models import Keywords
 from bfex.common.schema import KeywordSchema
+from bfex.blueprints.api_utils import apply_filters, paginate_query
 
 # Setup the blueprint and add to the api.
 keyword_bp = Blueprint("keyword_api", __name__)
 api = Api(keyword_bp)
 
-def paginate_query(request, search):
-    page = request.args.get("page", default=0, type=int)
-    results = request.args.get("results", default=20, type=int)
 
-    # Get the slice of data to retrieve
-    first = page * results
-    last = (page * results) + results
-
-    count = search.count()
-    query = search[first:last]
-
-    has_previous = True if page > 0 else False
-    has_next = True if last < count else False
-    previous = page - 1 if has_previous else None
-    next = page + 1 if has_next else None
-
-    pagination = {
-        "has_previous": has_previous,
-        "has_next": has_next,
-        "previous_page": previous,
-        "current_page": page,
-        "next_page": next,
-    }
-
-    return (query, pagination)
-
-def apply_filters(search, **kwargs):
-    new_search = search
-    for key, value in kwargs.items():
-        if value is not None:
-            new_search = new_search.filter('match', key=value)
 class KeywordListAPI(Resource):
     """Methods for performing some operations on lists of Faculty members."""
 
@@ -50,6 +21,7 @@ class KeywordListAPI(Resource):
         :param results: URL Parameter for the number of results to return per page. Default - 20.
         :param id: URL Parameter to filter the results based on a faculty id.
         :param source: URL Parameter to filter the results based on the keyword source.
+        :param approach: URL Parameter to filter results based on the approach_id.
         :return:
         """
         id = request.args.get("id", type=int)
@@ -57,14 +29,7 @@ class KeywordListAPI(Resource):
         approach = request.args.get("approach", type=int)
 
         search = Keywords.search()
-
-        # Apply filters based on id and source if given
-        if id is not None:
-            search = search.filter('match', faculty_id=id)
-        if source is not None:
-            search = search.filter('match', source=source)
-        if approach is not None:
-            search = search.filter('match', appro)
+        search = apply_filters(search, faculty_id=id, datasource=source, approach_id=approach)
         
         query, pagination_info = paginate_query(request, search)
         response = query.execute()

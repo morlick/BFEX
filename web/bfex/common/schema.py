@@ -41,11 +41,13 @@ class KeywordSchema(Schema):
         """Turns the extracted json data into an instance of Faculty"""
         return Keywords(meta={}, **data)
 
+
 class GrantSchema(Schema):
     faculty_name = fields.String(load_from="faculty_name", required=True)
     title = fields.String(missing="", required=True)
     text = fields.String(load_from="summary", required=True)
     source = fields.String(missing="nserc")
+
 
 class DocumentSchema(Schema):
     faculty_id = fields.String(required=True)

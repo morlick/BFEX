@@ -31,8 +31,8 @@ class GrantsAPI(Resource):
             abort(400)
 
         # Data larger than 16MB should be broken up.
-        # if request.content_length > 16*MB:
-        #     abort(413)
+        if request.content_length > 16*MB:
+            abort(413)
 
         json_data = request.get_json()
 

@@ -36,6 +36,7 @@ def create_app():
     app.register_blueprint(workflow_bp)
     app.register_blueprint(grants_bp)
     app.register_blueprint(document_bp)
+    app.register_blueprint(keyword_bp)
 
     return app
 
