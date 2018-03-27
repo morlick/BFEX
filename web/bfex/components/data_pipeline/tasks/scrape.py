@@ -2,7 +2,6 @@ from bfex.components.scraper.scraper_factory import ScraperFactory
 from bfex.components.scraper.scraper_type import ScraperType
 from bfex.models import Faculty, Document
 from bfex.common.utils import URLs, FacultyNames
-from bfex.common.exceptions import ScraperException
 from bfex.components.data_pipeline.tasks.task import Task
 from bfex.components.key_generation.rake_approach import *
 
