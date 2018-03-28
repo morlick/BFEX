@@ -2,7 +2,7 @@ from bfex.components.scraper.scraper_factory import ScraperFactory
 from bfex.components.scraper.scraper_type import ScraperType
 from bfex.models import Faculty, Document
 from bfex.common.utils import URLs, FacultyNames
-from bfex.common.exceptions import WorkflowException
+from bfex.common.exceptions import WorkflowException, ScraperException
 from bfex.components.data_pipeline.tasks.task import Task
 from bfex.components.key_generation.rake_approach import *
 
@@ -43,7 +43,10 @@ class GoogleScholarPageScrape(Task):
 
         if faculty.google_scholar is not None and "http" in faculty.google_scholar:
             scraper = ScraperFactory.create_scraper(faculty.google_scholar, ScraperType.GOOGLESCHOLAR)
-            scrapps = scraper.get_scrapps()
+            try:
+                scrapps = scraper.get_scrapps()
+            except ScraperException: 
+                return faculty
             for scrapp in scrapps:
                 doc = Document()
                 doc.source = "GoogleScholar"
