@@ -1,3 +1,4 @@
+from datetime import datetime
 from bfex.components.scraper.scraper_factory import ScraperFactory
 from bfex.components.scraper.scraper_type import ScraperType
 from bfex.models import Faculty, Document
@@ -69,6 +70,7 @@ class ResearchIdPageScrape(Task):
                 doc.user_keywords = keywords_and_description.meta_data["keywords"]
             except:
                 print("No keywords")
+            doc.date = datetime.now()
             doc.save()
 
             for scrapp in titles:
@@ -76,6 +78,7 @@ class ResearchIdPageScrape(Task):
                 doc.source = "ResearchId"
                 doc.faculty_id = faculty.faculty_id
                 doc.text = scrapp.title
+                doc.date = datetime.now()
                 doc.save()
 
         return faculty

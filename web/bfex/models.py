@@ -1,4 +1,4 @@
-from elasticsearch_dsl import DocType, Integer, Text
+from elasticsearch_dsl import DocType, Integer, Text, Date
 from elasticsearch import NotFoundError
 
 
@@ -110,7 +110,7 @@ class Document(DocType, Model):
 
     user_keywords = Text()
     text = Text()
-    date = Text()
+    date = Date()
 
     class Meta:
         index = "document"
