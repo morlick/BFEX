@@ -3,7 +3,7 @@ from flask_restful import Resource, Api
 
 from bfex.components.search_engine import parser, builder
 from bfex.models import Faculty, Keywords
-from bfex.common.schema import FacultySchema
+from bfex.common.schema import FacultySchema, KeywordSchema
 
 # Setup the blueprint and add to the api.
 search_bp = Blueprint("search_api", __name__)
@@ -26,14 +26,28 @@ class SearchAPI(Resource):
         pf_query = q_parser.parse_query(query)
         elastic_query = q_builder.build(pf_query)
 
-        # response = Faculty.search().query(elastic_query).execute()
         response = Keywords.search().query(elastic_query).execute()
-        faculty_with_keywords = set()
-        for keywords in response:
-            faculty_with_keywords.add(keywords.faculty_id)
-        schema = FacultySchema()
-        results = [schema.dump(Faculty.safe_get(faculty_id)) for faculty_id in faculty_with_keywords]
 
+        # Build keyword set for each faculty
+        keyword_schema = KeywordSchema(exclude=['faculty_id'])
+        faculty_with_keywords = {}
+        for keywords in response:
+            if keywords.faculty_id not in faculty_with_keywords:
+                faculty_with_keywords[keywords.faculty_id] = []
+
+            faculty_with_keywords[keywords.faculty_id].append(keywords)        
+
+        # Build json representations with nested keywords
+        schema = FacultySchema()
+        results = []
+        for faculty_id, keywords in faculty_with_keywords.items():
+            faculty = Faculty.safe_get(faculty_id)
+
+            if faculty is None: continue
+            
+            faculty.generated_keywords = keywords
+            results.append(schema.dump(faculty))
+            
         return {
             "data": results
         }

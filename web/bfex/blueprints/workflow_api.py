@@ -30,7 +30,7 @@ class WorkflowAPI(Resource):
         try:
             task_list = TASKLIST[to_run]
         except:
-            aport(400)
+            abort(400)
 
         workflow = Workflow(task_list, Faculty.safe_get(faculty))
         run_workflow.apply_async((workflow,), countdown=1)
