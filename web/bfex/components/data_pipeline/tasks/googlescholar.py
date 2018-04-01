@@ -1,3 +1,4 @@
+from datetime import datetime
 from bfex.components.scraper.scraper_factory import ScraperFactory
 from bfex.components.scraper.scraper_type import ScraperType
 from bfex.models import Faculty, Document
@@ -52,6 +53,7 @@ class GoogleScholarPageScrape(Task):
                 doc.source = "GoogleScholar"
                 doc.faculty_id = faculty.faculty_id
                 doc.text = scrapp.title
+                doc.date = datetime.now()
                 doc.save()
         
         return faculty
