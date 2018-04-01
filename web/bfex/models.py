@@ -1,4 +1,4 @@
-from elasticsearch_dsl import DocType, Integer, Text
+from elasticsearch_dsl import DocType, Integer, Text, Date
 from elasticsearch import NotFoundError
 
 
@@ -26,6 +26,7 @@ class Faculty(DocType, Model):
     """
     faculty_id = Integer(required=True)
     name = Text(required=True)
+    full_name = Text(required=True)
     email = Text(required=True)
     department = Text()
 
@@ -110,7 +111,7 @@ class Document(DocType, Model):
 
     user_keywords = Text()
     text = Text()
-    date = Text()
+    date = Date()
 
     class Meta:
         index = "document"

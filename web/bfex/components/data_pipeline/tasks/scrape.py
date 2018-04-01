@@ -43,7 +43,7 @@ class FacultyPageScrape(Task):
         scraper = ScraperFactory.create_scraper(faculty_directory_url, ScraperType.PROFILE)
         scrapp = scraper.get_scrapps()[0]
 
-        ret_data = (data,scrapp)
+        ret_data = (data, scrapp)
         
         return ret_data
 

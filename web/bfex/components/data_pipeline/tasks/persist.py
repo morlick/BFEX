@@ -1,9 +1,9 @@
+from datetime import datetime
 from bfex.components.data_pipeline.tasks import Task
 from bfex.components.scraper.scrapp import Scrapp
 from bfex.models import Faculty, Document, Keywords
 from bfex.common.exceptions import WorkflowException
 from bfex.components.key_generation.rake_approach import *
-
 
 
 class UpdateFacultyFromScrape(Task):
@@ -71,6 +71,7 @@ class UpdateFacultyFromScrape(Task):
                 doc.source = "profile"
 
             doc.text = scrapp.meta_data["text"]
+            doc.date = datetime.now()
             doc.save()
 
         faculty.save()

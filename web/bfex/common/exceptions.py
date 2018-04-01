@@ -19,3 +19,10 @@ class WorkflowTaskArgumentException(WorkflowException):
     def __init__(self, message, code=None):
         super().__init__(message)
         self.code = code
+
+
+class ScraperException(Exception):
+    """Exception is thrown when the scraper url validation fails."""
+    def __init__(self, message, code=None):
+        super().__init__(message)
+        self.code = code

@@ -1,9 +1,6 @@
 import os
 from flask import Flask
-from bfex.blueprints.faculty_api import faculty_bp
-from bfex.blueprints.search_api import search_bp
-from bfex.blueprints.batch_api import batch_bp
-from bfex.blueprints.workflow_api import workflow_bp
+from bfex.blueprints import *
 
 from bfex.models import initialize_models
 from bfex.components.key_generation.rake_approach import *
@@ -37,13 +34,9 @@ def create_app():
     app.register_blueprint(search_bp)
     app.register_blueprint(batch_bp)
     app.register_blueprint(workflow_bp)
-
-    #register_approach(GenericApproach, 0)
-    #register_approach(RakeApproach, 1)
-    #key_generator = KeyGenerator()
-    #key_generator.register_approach(GenericApproach, 0)
-    #key_generator.register_approach(RakeApproach, 1)
-    #app.register_blueprint(data_ingestion)
+    app.register_blueprint(grants_bp)
+    app.register_blueprint(document_bp)
+    app.register_blueprint(keyword_bp)
 
     return app
 

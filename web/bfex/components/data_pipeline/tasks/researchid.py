@@ -1,8 +1,9 @@
+from datetime import datetime
 from bfex.components.scraper.scraper_factory import ScraperFactory
 from bfex.components.scraper.scraper_type import ScraperType
 from bfex.models import Faculty, Document
 from bfex.common.utils import URLs, FacultyNames
-from bfex.common.exceptions import WorkflowException
+from bfex.common.exceptions import WorkflowException, ScraperException
 from bfex.components.data_pipeline.tasks.task import Task
 from bfex.components.key_generation.rake_approach import *
 
@@ -49,7 +50,10 @@ class ResearchIdPageScrape(Task):
         if faculty.research_id is not None:
             
             scraper = ScraperFactory.create_scraper(faculty.research_id, ScraperType.RESEARCHID)
-            scrapps = scraper.get_scrapps()
+            try:
+                scrapps = scraper.get_scrapps()
+            except ScraperException:
+                return faculty
 
             keywords_and_description = scrapps[0]
             titles = scrapps[1:]
@@ -66,6 +70,7 @@ class ResearchIdPageScrape(Task):
                 doc.user_keywords = keywords_and_description.meta_data["keywords"]
             except:
                 print("No keywords")
+            doc.date = datetime.now()
             doc.save()
 
             for scrapp in titles:
@@ -73,6 +78,7 @@ class ResearchIdPageScrape(Task):
                 doc.source = "ResearchId"
                 doc.faculty_id = faculty.faculty_id
                 doc.text = scrapp.title
+                doc.date = datetime.now()
                 doc.save()
 
         return faculty
